@@ -10,6 +10,8 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"pino": "^9.6.0",
+		"pino-pretty": "^13.0.0",
 		"zod": "^3.24.4"
 	},
 	"devDependencies": {
@@ -20,9 +22,21 @@
 			"import": "./dist/index.js",
 			"require": "./dist/index.js"
 		},
-        "./schemas": {
-            "import": "./dist/schemas/index.js",
-            "require": "./dist/schemas/index.js"
-        }
+		"./schemas": {
+			"import": "./dist/schemas/index.js",
+			"require": "./dist/schemas/index.js"
+		},
+		"./schemas/*": {
+			"import": "./dist/schemas/*.js",
+			"require": "./dist/schemas/*.js"
+		},
+		"./utils": {
+			"import": "./dist/utils/index.js",
+			"require": "./dist/utils/index.js"
+		},
+		"./utils/*": {
+			"import": "./dist/utils/*.js",
+			"require": "./dist/utils/*.js"
+		}
 	}
 }

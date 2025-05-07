@@ -2,7 +2,7 @@ import * as z from "zod";
 
 export const signUpSchema = z
 	.object({
-		email: z.string({ required_error: "Email is required" }).email().toLowerCase(),
+		email: z.string({ required_error: "Email is required" }).email().toLowerCase().trim(),
 		password: z
 			.string({ required_error: "Password is required" })
 			.min(6, "Password must be at least 6 characters")
@@ -29,6 +29,7 @@ export const signInSchema = z.object({
 		.string({ required_error: "Email is required" })
 		.email()
 		.toLowerCase()
+		.trim()
 		.or(
 			z
 				.string({ required_error: "Username is required" })
