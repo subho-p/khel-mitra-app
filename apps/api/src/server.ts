@@ -1,11 +1,9 @@
 import app from "app.js";
-import "dotenv/config";
-
-const PORT = process.env.PORT;
+import EnvConfig, { config } from "config/env.config.js";
 
 try {
-	app.listen(PORT, () => {
-		console.log(`Server check at http://localhost:${PORT}/health`);
+	app.listen(config.get("PORT"), () => {
+		console.log(`Server check at http://localhost:${config.get("PORT")}/health`);
 	});
 } catch (error) {
 	console.log(`[ERROR] ${error}`);
