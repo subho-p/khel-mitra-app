@@ -1,0 +1,13 @@
+services:
+    khel-mitra:
+        image: postgres
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: khelmitra123
+        networks:
+            - khel-mitra
+            
+networks:
+    khel-mitra:
