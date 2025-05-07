@@ -15,6 +15,13 @@
       "when": 1746600918969,
       "tag": "20250507065518_abandoned_manta",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1746647865649,
+      "tag": "20250507195745_fair_roxanne_simpson",
+      "breakpoints": true
     }
   ]
 }

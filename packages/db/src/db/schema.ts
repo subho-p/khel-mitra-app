@@ -8,7 +8,7 @@ import { text } from "drizzle-orm/pg-core";
 export const userTable = pgTable("users", {
 	id: serial("id").primaryKey(),
 
-	name: varchar("name", { length: 100 }).notNull(),
+	name: varchar("name", { length: 100 }),
 	username: varchar("username", { length: 100 }).unique().notNull(),
 	email: varchar("email", { length: 100 }).unique().notNull(),
 
