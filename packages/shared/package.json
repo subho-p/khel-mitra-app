@@ -1,0 +1,28 @@
+{
+	"name": "@khel-mitra/shared",
+	"version": "1.0.0",
+	"description": "",
+	"main": "dist/index.js",
+	"scripts": {
+		"build": "tsc -b"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"zod": "^3.24.4"
+	},
+	"devDependencies": {
+		"typescript": "^5.8.2"
+	},
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.js"
+		},
+        "./schemas": {
+            "import": "./dist/schemas/index.js",
+            "require": "./dist/schemas/index.js"
+        }
+	}
+}

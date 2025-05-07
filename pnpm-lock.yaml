@@ -159,6 +159,12 @@ importers:
         specifier: ^8.31.0
         version: 8.31.0(eslint@9.25.0(jiti@2.4.2))(typescript@5.8.2)
 
+  packages/shared:
+    dependencies:
+      zod:
+        specifier: ^3.24.4
+        version: 3.24.4
+
   packages/typescript-config: {}
 
 packages:
@@ -2667,6 +2673,9 @@ packages:
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  zod@3.24.4:
+    resolution: {integrity: sha512-OdqJE9UDRPwWsrHjLN2F8bPxvwJBK22EHLWtanu0LSYr5YqzsaaW3RMgmjwr8Rypg5k+meEJdSPXJZXE/yqOMg==}
 
 snapshots:
 
@@ -5240,3 +5249,5 @@ snapshots:
   xtend@4.0.2: {}
 
   yocto-queue@0.1.0: {}
+
+  zod@3.24.4: {}
