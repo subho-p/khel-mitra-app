@@ -3,7 +3,11 @@
 	"version": "1.0.0",
 	"main": "dist/index.js",
 	"scripts": {
-		"build": "tsc -b"
+		"build": "tsc -b",
+		"db:generate": "drizzle-kit generate",
+		"db:migrate": "drizzle-kit migrate",
+		"db:studio": "drizzle-kit studio",
+		"db:push": "drizzle-kit push"
 	},
 	"keywords": [],
 	"author": "",
