@@ -1,7 +1,8 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { authRoutes } from "routes/auth.routes.js";
+import { authRoutes } from "./routes/auth.routes.js";
+import { logger } from "@khel-mitra/shared/utils";
 
 const app = express();
 
@@ -26,8 +27,10 @@ app.use((req, res, next) => {
 	next();
 });
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-	console.error(err);
-	res.status(500).json({ message: "something went wrong" });
+	const reqMethod = req.method;
+	const reqUrl = req.url.replace("/api", "");
+	logger.error(err, [reqMethod, reqUrl], "error");
+	res.status(500).json({ message: err?.message || "something went wrong" });
 });
 
 export default app;

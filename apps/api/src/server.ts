@@ -1,11 +1,12 @@
-import app from "app.js";
-import EnvConfig, { config } from "config/env.config.js";
+import { logger } from "@khel-mitra/shared/utils";
+import app from "./app.js";
+import EnvConfig, { config } from "./config/env.config.js";
 
 try {
 	app.listen(config.get("PORT"), () => {
-		console.log(`Server check at http://localhost:${config.get("PORT")}/health`);
+		logger.info(`Server check at http://localhost:${config.get("PORT")}/health`);
 	});
 } catch (error) {
-	console.log(`[ERROR] ${error}`);
+	logger.error(`Server failed to start ${error}`);
 	process.exit(1);
 }
