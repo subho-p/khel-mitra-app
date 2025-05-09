@@ -1,4 +1,6 @@
-import React, { useTransition } from "react";
+"use client";
+
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -23,9 +25,9 @@ export function SignupForm() {
 	const router = useRouter();
 	const localStorage = useLocalStorage();
 
+	const [isLoading, setIsLoading] = React.useState(false);
 	const [success, setSuccess] = React.useState("");
 	const [error, setError] = React.useState("");
-	const [isLoading, startTransition] = useTransition();
 
 	const signUpForm = useForm<SignUpSchema>({
 		resolver: zodResolver(signUpSchema),
@@ -36,25 +38,21 @@ export function SignupForm() {
 		},
 	});
 
-	const onSubmit = (data: SignUpSchema) => {
+	const onSubmit = async (data: SignUpSchema) => {
+		setIsLoading(true);
 		setSuccess("");
 		setError("");
 
-		startTransition(async () => {
-			signup(data)
-				.then((res) => {
-					if (res.success) {
-						setSuccess(res.success);
-						router.push("/auth/sign-in");
-						localStorage.set("email", { email: data.email });
-					}
-					if (res.error) {
-						setError(res.error);
-					}
-				})
-				.catch((error) => console.log(error))
-				.finally(() => signUpForm.reset());
-		});
+		try {
+			await signup(data);
+			setSuccess("User signed up successfully");
+			router.push("/auth/signin");
+			signUpForm.reset();
+		} catch (error) {
+			setError("Something went wrong");
+		} finally {
+			setIsLoading(false);
+		}
 
 		setTimeout(() => {
 			setSuccess("");
@@ -134,7 +132,7 @@ export function SignupForm() {
 					<FormErrorMessage message={error} />
 
 					<Button type="submit" className="w-full mt-3" isLoading={isLoading}>
-						Continue
+						Sign up
 					</Button>
 				</form>
 			</Form>
