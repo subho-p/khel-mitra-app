@@ -1,6 +1,6 @@
 import dbClient from "@khel-mitra/db";
 import { eq } from "@khel-mitra/db/drizzle";
-import { logger } from "@khel-mitra/shared/utils";
+import { logger } from "@khel-mitra/shared/utils/logger";
 import { userPasswordTable, userTable } from "@khel-mitra/db/schemas";
 
 import { isEmail } from "../utils/check.js";
@@ -16,10 +16,10 @@ class UserService {
 		this.isUsernameAlreadyExists = this.isUsernameAlreadyExists.bind(this);
 		this.getUniqueUsername = this.getUniqueUsername.bind(this);
 		this.getUserByEmailOrUsername = this.getUserByEmailOrUsername.bind(this);
-        this.getUserById = this.getUserById.bind(this);
-        this.getUserByEmail = this.getUserByEmail.bind(this);
-        this.getUserByUsername = this.getUserByUsername.bind(this);
-        this.getUserPassword = this.getUserPassword.bind(this);
+		this.getUserById = this.getUserById.bind(this);
+		this.getUserByEmail = this.getUserByEmail.bind(this);
+		this.getUserByUsername = this.getUserByUsername.bind(this);
+		this.getUserPassword = this.getUserPassword.bind(this);
 	}
 
 	isUserAlreadyExists(email: string) {
@@ -57,7 +57,7 @@ class UserService {
 			.then((res) => res[0]);
 	}
 
-	async insertUserCredentials(userId: number, password: string) {
+	async insertUserCredentials(userId: string, password: string) {
 		return await dbClient
 			.insert(userPasswordTable)
 			.values({ password, userId })
@@ -75,7 +75,7 @@ class UserService {
 		}
 	}
 
-	async getUserById(userId: number) {
+	async getUserById(userId: string) {
 		return await dbClient.query.userTable.findFirst({
 			where: eq(userTable.id, userId),
 		});
@@ -93,11 +93,11 @@ class UserService {
 		});
 	}
 
-    async getUserPassword(userId: number) {
-        return await dbClient.query.userPasswordTable.findFirst({
-            where: eq(userPasswordTable.userId, userId),
-        });
-    }
+	async getUserPassword(userId: string) {
+		return await dbClient.query.userPasswordTable.findFirst({
+			where: eq(userPasswordTable.userId, userId),
+		});
+	}
 }
 
 export { UserService };

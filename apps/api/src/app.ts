@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { authRoutes } from "./routes/auth.routes.js";
-import { logger } from "@khel-mitra/shared/utils";
+import { logger } from "@khel-mitra/shared/utils/logger";
 
 const app = express();
 

@@ -44,8 +44,7 @@ export const verifyToken = async (
 			return res.status(401).json({ message: "Unauthorized" });
 		}
 
-		const userWithAvatar = { ...user, avatar: user.avatar?.url || null };
-		req.currentUser = userWithAvatar;
+		req.currentUser = user;
 
 		next();
 	} catch (error) {

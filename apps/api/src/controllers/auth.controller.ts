@@ -4,7 +4,8 @@ import jwt from "jsonwebtoken";
 
 import { userTable } from "@khel-mitra/db/schemas";
 import { signInSchema, signUpSchema } from "@khel-mitra/shared/schemas";
-import { logger, zodValidation } from "@khel-mitra/shared/utils";
+import { zodValidation } from "@khel-mitra/shared/utils/zod-validation";
+import { logger } from "@khel-mitra/shared/utils/logger";
 
 import { config } from "../config/env.config.js";
 import { UserService } from "../services/user.service.js";

@@ -1,4 +1,4 @@
-import { logger } from "@khel-mitra/shared/utils";
+import { logger } from "@khel-mitra/shared/utils/logger";
 import app from "./app.js";
 import EnvConfig, { config } from "./config/env.config.js";
 
