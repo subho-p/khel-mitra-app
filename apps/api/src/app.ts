@@ -3,6 +3,9 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { authRoutes } from "./routes/auth.routes.js";
 import { logger } from "@khel-mitra/shared/utils/logger";
+import session from "express-session";
+import passport from "passport";
+import "./config/passport.config.js";
 
 const app = express();
 
@@ -10,6 +13,25 @@ const app = express();
 app.use(cors());
 app.use(cookieParser());
 
+// Express Session
+app.use(
+	session({
+		secret: process.env.SESSION_SECRET!,
+		resave: false,
+		saveUninitialized: true,
+		cookie: {
+			secure: process.env.NODE_ENV === "production",
+			httpOnly: true,
+			sameSite: "lax",
+		},
+	})
+);
+
+// Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Body Parser
 app.use(express.json({ limit: "32kb" }));
 app.use(express.urlencoded({ extended: true, limit: "32kb" }));
 app.use(express.static("public"));

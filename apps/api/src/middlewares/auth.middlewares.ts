@@ -1,53 +1,21 @@
 import express from "express";
-import jwt from "jsonwebtoken";
-import { config } from "../config/env.config.js";
-import db from "@khel-mitra/db";
-import { eq } from "@khel-mitra/db/drizzle";
-import { userTable } from "@khel-mitra/db/schemas";
-
-declare global {
-	namespace Express {
-		interface Request {
-			currentUser?: any;
-		}
-	}
-}
+import passport from "passport";
 
 export const verifyToken = async (
 	req: express.Request,
 	res: express.Response,
 	next: express.NextFunction
 ) => {
-	try {
-		// from headers authorization bearer token or from cookies
-		const token = req.headers.authorization?.split(" ")[1] || req.cookies.access_token;
-
-		if (!token) {
-			return res.status(401).json({ message: "Unauthorized" });
+	passport.authenticate("jwt", { session: false }, async (err: any, user: any, info: any) => {
+		if (err) {
+			return res.status(500).json({ message: "Authentication error", error: err });
 		}
-
-		// verify token
-		const payload: any = jwt.verify(token, config.get("JWT_SECRET") as string);
-		if (!payload || !payload.userId) {
-			return res.status(401).json({ message: "Unauthorized" });
-		}
-
-		// set user id to req.user
-		const user = await db.query.userTable.findFirst({
-			where: eq(userTable.id, payload.userId),
-			with: {
-				avatar: true,
-			},
-		});
-
 		if (!user) {
 			return res.status(401).json({ message: "Unauthorized" });
 		}
 
-		req.currentUser = user;
+		req.user = user;
 
 		next();
-	} catch (error) {
-		throw error;
-	}
+	});
 };
