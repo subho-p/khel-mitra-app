@@ -4,13 +4,21 @@ import jwt from "jsonwebtoken";
 
 import { userTable } from "@khel-mitra/db/schemas";
 import { signInSchema, signUpSchema } from "@khel-mitra/shared/schemas";
-import { zodValidation } from "@khel-mitra/shared/utils/zod-validation";
 import { logger } from "@khel-mitra/shared/utils/logger";
 
 import { config } from "../config/env.config.js";
 import { UserService } from "../services/user.service.js";
 
 import passport from "passport";
+import {
+	BadRequestError,
+	ConflictError,
+	InternalServerError,
+	NotFoundError,
+	UnauthorizedError,
+} from "utils/error-response.js";
+import { zodValidation } from "utils/zod-validation.js";
+import { ne } from "@khel-mitra/db/drizzle";
 
 class AuthController {
 	private userService = new UserService();
@@ -23,18 +31,18 @@ class AuthController {
 		this.refresh = this.refresh.bind(this);
 	}
 
-	public async signUp(req: express.Request, res: express.Response) {
+	public async signUp(req: express.Request, res: express.Response, next: express.NextFunction) {
 		try {
 			const { email, password } = zodValidation(signUpSchema, req.body);
 
 			const existsUser = await this.userService.isUserAlreadyExists(email);
 			if (existsUser) {
-				return res.status(409).json({ message: "User already exists" });
+				throw new ConflictError("User already exists");
 			}
 
 			const newUser = await this.userService.createUser(email);
 			if (!newUser) {
-				return res.status(500).json({ message: "Failed to create user" });
+				throw new InternalServerError("Failed to create user");
 			}
 
 			const hashedPassword = await argon.hash(password);
@@ -49,9 +57,8 @@ class AuthController {
 				data: { accessToken: tokens.accessToken },
 				message: "User signed up successfully",
 			});
-		} catch (error) {
-			logger.error("Sign-up failed", { error });
-			return res.status(500).json({ message: "Internal server error" });
+		} catch (error: any) {
+			next(error);
 		}
 	}
 
@@ -64,9 +71,7 @@ class AuthController {
 				{ session: false },
 				async (err: any, user: any, info: any) => {
 					if (err || !user) {
-						return res
-							.status(400)
-							.json({ message: info?.message || "Invalid credentials" });
+						throw new BadRequestError(info?.message || "Invalid credentials");
 					}
 
 					req.logIn(user, { session: false }, async (loginErr) => {
@@ -95,7 +100,7 @@ class AuthController {
 			if (req.isAuthenticated && req.isAuthenticated()) {
 				req.logout((err) => {
 					if (err) {
-						return res.status(500).json({ message: "Error during logout" });
+						throw new InternalServerError("Error during logout");
 					}
 				});
 			}
@@ -106,31 +111,31 @@ class AuthController {
 
 			return res.status(200).json({ message: "User signed out successfully" });
 		} catch (error) {
-			return res.status(500).json({ message: "Logout failed", error });
+			throw new InternalServerError("Error during logout");
 		}
 	}
 
-	public async refresh(req: express.Request, res: express.Response) {
+	public async refresh(req: express.Request, res: express.Response, next: express.NextFunction) {
 		try {
 			const refreshToken = req.cookies.refresh_token;
 			if (!refreshToken) {
-				return res.status(401).json({ message: "Refresh token not found" });
+				throw new UnauthorizedError("Refresh token not found");
 			}
 
 			let payload: any;
 			try {
 				payload = jwt.verify(refreshToken, config.get("JWT_REFRESH_SECRET") as string);
 			} catch (err) {
-				return res.status(401).json({ message: "Invalid or expired refresh token" });
+				throw new UnauthorizedError("Invalid or expired refresh token");
 			}
 
 			if (!payload?.userId) {
-				return res.status(401).json({ message: "Invalid refresh token payload" });
+				throw new UnauthorizedError("Invalid refresh token payload");
 			}
 
 			const user = await this.userService.getUserById(payload.userId);
 			if (!user) {
-				return res.status(404).json({ message: "User not found" });
+				throw new NotFoundError("User not found");
 			}
 
 			const tokens = this.generateTokens(user);
@@ -143,8 +148,7 @@ class AuthController {
 				message: "Token refreshed successfully",
 			});
 		} catch (error) {
-			logger.error("Token refresh failed", { error });
-			return res.status(500).json({ message: "Internal server error" });
+			next(error);
 		}
 	}
 

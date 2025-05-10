@@ -1,5 +1,6 @@
 import express from "express";
 import passport from "passport";
+import { UnauthorizedError } from "utils/error-response";
 
 export const verifyToken = async (
 	req: express.Request,
@@ -7,11 +8,8 @@ export const verifyToken = async (
 	next: express.NextFunction
 ) => {
 	passport.authenticate("jwt", { session: false }, async (err: any, user: any, info: any) => {
-		if (err) {
-			return res.status(500).json({ message: "Authentication error", error: err });
-		}
-		if (!user) {
-			return res.status(401).json({ message: "Unauthorized" });
+		if (err || !user) {
+			throw new UnauthorizedError(info?.message || "Unauthorized");
 		}
 
 		req.user = user;
