@@ -69,7 +69,7 @@ class PassportConfig {
 			},
 			async (jwtPayload, done) => {
 				try {
-					const user = await this.userService.getUserById(jwtPayload.id);
+					const user = await this.userService.getUserById(jwtPayload.userId);
 					if (!user) {
 						return done(null, false, { message: "User not found" });
 					}

@@ -18,12 +18,12 @@ export const verifyToken = async (
 ) => {
 	passport.authenticate("jwt", { session: false }, async (err: any, user: any, info: any) => {
 		if (err || !user) {
-			throw new UnauthorizedError(info?.message || "Unauthorized");
+			return next(new UnauthorizedError(info?.message || "Unauthorized"));
 		}
 
 		req.user = user;
 		req.currentUser = user;
 
 		next();
-	});
+	})(req, res, next);
 };
