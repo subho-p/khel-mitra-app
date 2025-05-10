@@ -1,6 +1,15 @@
+import { userTable } from "@khel-mitra/db/schemas";
 import express from "express";
 import passport from "passport";
 import { UnauthorizedError } from "utils/error-response";
+
+declare global {
+	namespace Express {
+		interface Request {
+			currentUser?: typeof userTable.$inferSelect;
+		}
+	}
+}
 
 export const verifyToken = async (
 	req: express.Request,
@@ -13,6 +22,7 @@ export const verifyToken = async (
 		}
 
 		req.user = user;
+		req.currentUser = user;
 
 		next();
 	});
