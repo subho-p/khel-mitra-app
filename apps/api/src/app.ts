@@ -2,10 +2,11 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { authRoutes } from "./routes/auth.routes.js";
-import { logger } from "@khel-mitra/shared/utils/logger";
 import session from "express-session";
 import passport from "passport";
 import "./config/passport.config.js";
+import { notFoundMiddleware } from "middlewares/notFound.middleware.js";
+import { globalErrorMiddleware } from "middlewares/globalError.middleware.js";
 
 const app = express();
 
@@ -44,15 +45,7 @@ app.use("/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 
 // ERROR HANDLERS
-app.use((req, res, next) => {
-	res.status(404).json({ message: `${req.method} ${req.url} is not found` });
-	next();
-});
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-	const reqMethod = req.method;
-	const reqUrl = req.url.replace("/api", "");
-	logger.error(err, [reqMethod, reqUrl], "error");
-	res.status(500).json({ message: err?.message || "something went wrong" });
-});
+app.use(notFoundMiddleware);
+app.use(globalErrorMiddleware);
 
 export default app;
