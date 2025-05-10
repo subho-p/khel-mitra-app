@@ -65,6 +65,9 @@ importers:
       unique-username-generator:
         specifier: ^1.4.0
         version: 1.4.0
+      zod:
+        specifier: ^3.24.4
+        version: 3.24.4
     devDependencies:
       '@types/cookie-parser':
         specifier: ^1.4.8

@@ -1,12 +1,15 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { authRoutes } from "./routes/auth.routes.js";
 import session from "express-session";
 import passport from "passport";
 import "./config/passport.config.js";
-import { notFoundMiddleware } from "middlewares/notFound.middleware.js";
-import { globalErrorMiddleware } from "middlewares/globalError.middleware.js";
+
+import { notFoundMiddleware } from "./middlewares/notFound.middleware.js";
+import { globalErrorMiddleware } from "./middlewares/globalError.middleware.js";
+
+import { authRoutes } from "./routes/auth.routes.js";
+import { meRoutes } from "./routes/me.routes.js";
 
 const app = express();
 
@@ -43,6 +46,7 @@ app.use("/health", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/me", meRoutes);
 
 // ERROR HANDLERS
 app.use(notFoundMiddleware);
