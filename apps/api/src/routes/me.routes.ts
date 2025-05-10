@@ -5,4 +5,4 @@ import { verifyToken } from "../middlewares/auth.middlewares.js";
 
 export const meRoutes = Router();
 
-meRoutes.get("/me", verifyToken, meController.getMe);
+meRoutes.get("/", verifyToken, meController.getMe);
