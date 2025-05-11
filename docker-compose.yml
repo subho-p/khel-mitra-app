@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: khelmitra123
+      POSTGRES_DB: khel-mitra-db  
+    networks:
+      - khel-mitra
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5  
+
+
+networks:
+  khel-mitra:
+    driver: bridge
