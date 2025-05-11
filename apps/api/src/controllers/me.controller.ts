@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express"
-import { logger } from "@khel-mitra/shared/utils/logger";
+import { logger } from "@khel-mitra/logger";
 import { NotFoundError } from "utils/error-response";
 import { UserService } from "services/user.service";
 

@@ -1,5 +1,5 @@
 import z from "zod";
-import { logger } from "@khel-mitra/shared/utils/logger";
+import { logger } from "@khel-mitra/logger";
 import { ZodValidationError } from "./error-response";
 
 export const zodValidation = <T extends z.ZodTypeAny>(schema: T, data: unknown): z.infer<T> => {

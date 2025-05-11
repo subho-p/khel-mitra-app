@@ -1,6 +1,6 @@
 import dbClient from "@khel-mitra/db";
 import { eq } from "@khel-mitra/db/drizzle";
-import { logger } from "@khel-mitra/shared/utils/logger";
+import { logger } from "@khel-mitra/logger";
 import { userPasswordTable, userTable } from "@khel-mitra/db/schemas";
 
 import { isEmail } from "../utils/check.js";

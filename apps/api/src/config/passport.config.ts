@@ -3,7 +3,7 @@ import JwtStrategy, { ExtractJwt } from "passport-jwt";
 import passport from "passport";
 import argon from "argon2";
 import express from "express";
-import { logger } from "@khel-mitra/shared/utils/logger";
+import { logger } from "@khel-mitra/logger";
 import { UserService } from "services/user.service";
 
 class PassportConfig {
