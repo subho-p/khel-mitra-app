@@ -1,19 +1,22 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Play } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-	variable: "--font-geist-sans",
-	subsets: ["latin"],
-});
+import { Providers } from "@/providers/providers";
+import { AppInit } from "./_app";
+import { Toaster } from "sonner";
 
-const geistMono = Geist_Mono({
-	variable: "--font-geist-mono",
+const play = Play({
+	variable: "--font-play",
 	subsets: ["latin"],
+	weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
-	title: "Khel Mitra",
+	title: {
+		default: "Khel Mitra",
+		template: "%s | Khel Mitra",
+	},
 	description: "Khel Mitra is a website for playing casual games with friends",
 };
 
@@ -23,9 +26,14 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
-			<body className={`${geistSans.variable} ${geistMono.variable} antialiased`} cz-shortcut-listen="true">
-				{children}
+		<html lang="en" suppressHydrationWarning={true}>
+			<body className={`${play.variable} font-play antialiased`} cz-shortcut-listen="true">
+				<Providers>
+					<AppInit>
+						{children}
+						<Toaster />
+					</AppInit>
+				</Providers>
 			</body>
 		</html>
 	);
