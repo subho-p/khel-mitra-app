@@ -1,4 +1,4 @@
-export const FormSuccessMessage = ({ message }: { message: string }) => {
+export const FormSuccessMessage = ({ message }: { message?: string }) => {
 	if (!message) {
 		return null;
 	}
@@ -10,7 +10,7 @@ export const FormSuccessMessage = ({ message }: { message: string }) => {
 	);
 };
 
-export const FormErrorMessage = ({ message }: { message: string }) => {
+export const FormErrorMessage = ({ message }: { message?: string }) => {
     if (!message) {
         return null;
     }
