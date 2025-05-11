@@ -68,8 +68,8 @@ export const accountsTable = pgTable(
 export const userPasswordTable = pgTable("user_passwords", {
 	userId: text("user_id")
 		.notNull()
-		.unique()
-		.references(() => userTable.id, { onDelete: "cascade" }),
+		.references(() => userTable.id, { onDelete: "cascade" })
+		.unique(),
 
 	password: varchar("password", { length: 100 }).notNull(),
 
