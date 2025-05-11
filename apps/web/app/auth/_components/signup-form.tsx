@@ -14,20 +14,15 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AuthCardWrapper } from "./AuthCardWrapper";
-import { signup } from "@/actions/auth/signup.action";
+import { AuthCardWrapper } from "./auth-card-wrapper";
 import { signUpSchema, SignUpSchema } from "@khel-mitra/shared/schemas";
-import { FormErrorMessage, FormSuccessMessage } from "@/components/FormMessage";
+import { FormErrorMessage, FormSuccessMessage } from "@/components/form-message";
 import { useRouter } from "next/navigation";
-import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useSession } from "@/providers/session-provider";
 
 export function SignupForm() {
 	const router = useRouter();
-	const localStorage = useLocalStorage();
-
-	const [isLoading, setIsLoading] = React.useState(false);
-	const [success, setSuccess] = React.useState("");
-	const [error, setError] = React.useState("");
+	const { signup } = useSession();
 
 	const signUpForm = useForm<SignUpSchema>({
 		resolver: zodResolver(signUpSchema),
@@ -39,29 +34,22 @@ export function SignupForm() {
 	});
 
 	const onSubmit = async (data: SignUpSchema) => {
-		setIsLoading(true);
-		setSuccess("");
-		setError("");
-
-		try {
-			await signup(data);
-			setSuccess("User signed up successfully");
-			router.push("/auth/signin");
-			signUpForm.reset();
-		} catch (error) {
-			setError("Something went wrong");
-		} finally {
-			setIsLoading(false);
-		}
-
-		setTimeout(() => {
-			setSuccess("");
-			setError("");
-		}, 5000);
+		signup.mutateAsync(data).then(() => {
+			setTimeout(() => {
+				signUpForm.reset();
+				router.push("/");
+				signup.reset();
+			}, 2_000);
+		});
 	};
 
 	return (
-		<AuthCardWrapper showFooter>
+		<AuthCardWrapper
+			headerTitle="Create an account"
+			headerLink="/auth/signin"
+			headerLinkText="Sign in to your account"
+			showFooter
+		>
 			<Form {...signUpForm}>
 				<form onSubmit={signUpForm.handleSubmit(onSubmit)}>
 					<div className="space-y-3">
@@ -128,10 +116,10 @@ export function SignupForm() {
 						/>
 					</div>
 
-					<FormSuccessMessage message={success} />
-					<FormErrorMessage message={error} />
+					<FormSuccessMessage message={signup.data?.message} />
+					<FormErrorMessage message={signup.error?.message} />
 
-					<Button type="submit" className="w-full mt-3" isLoading={isLoading}>
+					<Button type="submit" className="w-full mt-3" isLoading={signup.isPending}>
 						Sign up
 					</Button>
 				</form>
