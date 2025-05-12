@@ -14,7 +14,12 @@ import { meRoutes } from "./routes/me.routes.js";
 const app = express();
 
 // Middlewares
-app.use(cors());
+app.use(
+	cors({
+		origin: process.env.CORS_ORIGIN,
+		credentials: true,
+	})
+);
 app.use(cookieParser());
 
 // Express Session
