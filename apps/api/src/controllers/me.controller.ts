@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express"
 import { logger } from "@khel-mitra/logger";
-import { NotFoundError } from "utils/error-response";
-import { UserService } from "services/user.service";
+import { NotFoundError } from "../utils/error-response";
+import { UserService } from "../services/user.service";
 
 class MeController {
     private userService = new UserService();

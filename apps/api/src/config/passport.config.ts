@@ -4,7 +4,7 @@ import passport from "passport";
 import argon from "argon2";
 import express from "express";
 import { logger } from "@khel-mitra/logger";
-import { UserService } from "services/user.service";
+import { UserService } from "../services/user.service";
 
 class PassportConfig {
 	private userService: UserService;

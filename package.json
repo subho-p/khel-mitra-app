@@ -7,6 +7,7 @@
 		"dev": "dotenv -- turbo run dev",
 		"dev:web": "dotenv -- turbo run dev --filter=web",
 		"dev:api": "dotenv -- turbo run dev --filter=api",
+		"start": "turbo run start",
 		"lint": "turbo run lint",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
 		"check-types": "turbo run check-types",
@@ -15,7 +16,7 @@
 		"db:migrate": "cd ./packages/db && dotenv -- pnpm run db:migrate",
 		"db:push": "cd ./packages/db && dotenv -- pnpm run db:push",
 		"clean": "bash ./scripts/clean.sh",
-        "reset": "bash ./scripts/reset.sh"
+		"reset": "bash ./scripts/reset.sh"
 	},
 	"devDependencies": {
 		"dotenv-cli": "^8.0.0",

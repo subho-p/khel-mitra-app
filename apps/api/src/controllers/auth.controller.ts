@@ -16,8 +16,8 @@ import {
 	InternalServerError,
 	NotFoundError,
 	UnauthorizedError,
-} from "utils/error-response.js";
-import { zodValidation } from "utils/zod-validation.js";
+} from "../utils/error-response.js";
+import { zodValidation } from "../utils/zod-validation.js";
 import { ne } from "@khel-mitra/db/drizzle";
 
 class AuthController {
@@ -71,11 +71,14 @@ class AuthController {
 				{ session: false },
 				async (err: any, user: any, info: any) => {
 					if (err || !user) {
-						throw new BadRequestError(info?.message || "Invalid credentials");
+						logger.error(err);
+						return next(new BadRequestError(info?.message || "Invalid credentials"));
 					}
 
+					logger.info("User signed in successfully", { id: user.id });
 					req.logIn(user, { session: false }, async (loginErr) => {
 						if (loginErr) {
+							logger.error(loginErr);
 							return next(loginErr);
 						}
 
@@ -175,12 +178,12 @@ class AuthController {
 			httpOnly: true,
 			secure: config.get("NODE_ENV") === "production",
 			sameSite: "strict",
-			maxAge: 15 * 60_000,
+			maxAge: 36_00_000 * 24 * 30,
 		}).cookie("access_token", tokens.accessToken, {
 			httpOnly: true,
 			secure: config.get("NODE_ENV") === "production",
 			sameSite: "strict",
-			maxAge: 36_00_000 * 24 * 7,
+			maxAge: 15 * 60_000,
 		});
 	}
 }

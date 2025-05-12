@@ -1,7 +1,7 @@
 import { userTable } from "@khel-mitra/db/schemas";
 import express from "express";
 import passport from "passport";
-import { UnauthorizedError } from "utils/error-response";
+import { UnauthorizedError } from "../utils/error-response";
 
 declare global {
 	namespace Express {
