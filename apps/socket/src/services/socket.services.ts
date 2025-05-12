@@ -3,12 +3,13 @@ import { SocketLogger } from "../utils/logger.js";
 import { Failure, Success } from "../utils/reponse.js";
 import { BaseUser } from "../types/index.js";
 import jwt from "jsonwebtoken";
+import EnvConfig from "../config/env.config.js";
 
 class SocketService {
 	private readonly logger = new SocketLogger();
 	constructor(private readonly io: Server) {
-        this.init();
-    }
+		this.init();
+	}
 
 	public init() {
 		this.logger.info("Socket service initialized");
@@ -40,9 +41,9 @@ class SocketService {
 			next();
 		});
 
-        socket.on("ping", (_, callback) => {
-            callback(new Success("pong"));
-        })
+		socket.on("ping", (_, callback) => {
+			callback(new Success("pong"));
+		});
 
 		socket.on("disconnect", () => {
 			this.logger.info(`[DISCONNECT] Socket ${socket.id} disconnected`);
@@ -51,7 +52,7 @@ class SocketService {
 
 	private extractTokenData(token: string): BaseUser | undefined {
 		try {
-			const payload = jwt.verify(token, process.env.PLAYER_JWT_SECRET as string);
+			const payload = jwt.verify(token, EnvConfig.get("PLAYER_JWT_SECRET"));
 			if (!payload) return undefined;
 			return payload as BaseUser;
 		} catch {
