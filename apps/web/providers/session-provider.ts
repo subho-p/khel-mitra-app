@@ -68,12 +68,11 @@ const Session = createReactContext(() => {
 		init();
 	}, []);
 
-	const status =
-		refreshQuery.isSuccess && meQuery.isSuccess
+	const status = refreshQuery.isLoading
+		? "loading"
+		: refreshQuery.isSuccess
 			? "authenticated"
-			: refreshQuery.isSuccess && !meQuery.isSuccess
-				? "unauthenticated"
-				: "loading";
+			: "unauthenticated";
 
 	const user = meQuery.data?.data?.user || null;
 
