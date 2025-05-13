@@ -1,8 +1,4 @@
-export interface JWTPayloadOfUser {
-	userId: string;
-}
-
-export interface JWTPayloadOfPlayer {
+export interface BaseUser {
 	id: string;
 	name: string | null;
 	username: string;
@@ -10,7 +6,13 @@ export interface JWTPayloadOfPlayer {
 	image: string | null;
 }
 
-export interface User extends JWTPayloadOfPlayer {
+export interface JWTPayloadOfUser extends BaseUser {
+	userId: string;
+}
+
+export interface JWTPayloadOfPlayer extends BaseUser {}
+
+export interface User extends BaseUser {
 	email: string;
 	emailVerified: Date | null;
 	onboarded: Date | null;

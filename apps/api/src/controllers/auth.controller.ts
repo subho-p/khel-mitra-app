@@ -18,7 +18,7 @@ import {
 	UnauthorizedError,
 } from "../utils/error-response.js";
 import { zodValidation } from "../utils/zod-validation.js";
-import { ne } from "@khel-mitra/db/drizzle";
+import { jwtService } from "../services/jwt.service.js";
 
 class AuthController {
 	private userService = new UserService();
@@ -159,9 +159,7 @@ class AuthController {
 		const payload = {
 			userId: user.id,
 		};
-		const accessToken = jwt.sign(payload, config.get("JWT_SECRET"), {
-			expiresIn: config.get("JWT_EXPIRES_IN") as any,
-		});
+		const accessToken = jwtService.getUserJwtToken(user);
 
 		const refreshToken = jwt.sign(payload, config.get("JWT_REFRESH_SECRET") as string, {
 			expiresIn: config.get("JWT_REFRESH_EXPIRES_IN") as any,
