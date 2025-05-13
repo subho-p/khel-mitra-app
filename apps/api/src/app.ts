@@ -10,6 +10,7 @@ import { globalErrorMiddleware } from "./middlewares/globalError.middleware.js";
 
 import { authRoutes } from "./routes/auth.routes.js";
 import { meRoutes } from "./routes/me.routes.js";
+import { gamesRoutes } from "./routes/game.routes.js";
 
 const app = express();
 
@@ -52,6 +53,7 @@ app.use("/health", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/me", meRoutes);
+app.use("/api/games", gamesRoutes);
 
 // ERROR HANDLERS
 app.use(notFoundMiddleware);
