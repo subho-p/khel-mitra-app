@@ -7,5 +7,16 @@ export interface BaseUser {
 }
 
 export interface SocketUser extends BaseUser {
-    socketId: string;
+	socketId: string;
 }
+
+export interface Player extends SocketUser {
+	isAdmin?: boolean;
+	isReady?: boolean;
+	isHost?: boolean;
+	isTurn?: boolean;
+	noOfSkips?: number;
+	noOfWins?: number;
+}
+
+export type GameStatus = "idle" | "waiting" | "playing" | "finished";
