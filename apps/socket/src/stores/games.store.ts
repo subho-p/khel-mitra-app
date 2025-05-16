@@ -13,11 +13,25 @@ export class GamesStore {
 
 		return this.instance;
 	}
-    
-    public totalNoOfRooms() {
-        const noOfTicTacToeGames = ticTacToeStore.noOfRooms;
-        return noOfTicTacToeGames;
-    }
+
+	/**
+	 * Total of games
+	 * @returns {number}
+	 */
+	public totalNoOfRooms(): number {
+		const noOfTicTacToeGames = ticTacToeStore.noOfRooms;
+		return noOfTicTacToeGames;
+	}
+
+	/**
+	 * All games status
+	 * @returns {{ [key: string]: number}}
+	 */
+	public getAllRoomsStatus(): { [key: string]: number } {
+		return {
+			"tic-tac-toe": ticTacToeStore.noOfRooms,
+		};
+	}
 
 	/**
 	 * Clear all store

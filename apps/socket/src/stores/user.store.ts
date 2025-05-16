@@ -126,3 +126,5 @@ export class UserStore {
 		this.users.clear();
 	}
 }
+
+export const userStore = UserStore.getInstance();

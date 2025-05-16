@@ -13,7 +13,7 @@ export class TicTacToeStore {
 		return TicTacToeStore.instance;
 	}
 
-    /**
+	/**
 	 * Get tic tac toe room
 	 * @param roomId
 	 * @returns {TicTacToeRoom | undefined}
@@ -56,12 +56,28 @@ export class TicTacToeStore {
 	}
 
 	/**
+	 * Get all random tic tac toe rooms
+	 *
+	 * - isPrivate = false and no of players < maxPlayers
+	 *
+	 * @returns {TicTacToeRoom[]}
+	 */
+	public getRandom(): TicTacToeRoom[] {
+		const rooms: TicTacToeRoom[] = [];
+		this.ticTacToeRooms.forEach((room) => {
+			if (room.isAvailableRandomRoom) {
+				rooms.push(room);
+			}
+		});
+		return rooms;
+	}
+
+	/**
 	 * Clear all tic tac toe rooms
 	 */
 	public clear() {
 		this.ticTacToeRooms.clear();
 	}
-
 }
 
 export const ticTacToeStore = TicTacToeStore.getInstance();
