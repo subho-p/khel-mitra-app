@@ -1,9 +1,9 @@
 import { Server, Socket } from "socket.io";
 import { SocketLogger } from "../utils/logger.js";
-import { Failure, Success } from "../utils/reponse.js";
-import { BaseUser } from "../types/index.js";
-import jwt from "jsonwebtoken";
-import EnvConfig from "../config/env.config.js";
+import { UserStore } from "../stores/user.store.js";
+import { authMiddleware } from "../middleware/auth.middleware.js";
+import { TestHandler } from "../handlers/test.handler.js";
+import { TicTacToeHandler } from "handlers/tic-tac-toe.handler.js";
 
 class SocketService {
 	private readonly logger = new SocketLogger();
@@ -14,50 +14,29 @@ class SocketService {
 	public init() {
 		this.logger.info("Socket service initialized");
 
-		this.io.use(this.attachUserContext.bind(this));
+		this.io.use(authMiddleware);
 		this.io.on("connection", this.onConnection.bind(this));
-	}
-
-	private async attachUserContext(socket: Socket, next: (err?: any) => void): Promise<void> {
-		const token = socket.handshake.auth?.playerToken;
-		// if (!token) return next(new Failure("Unauthorized"));
-
-		const user = this.extractTokenData(token);
-		// if (!user) return next(new Failure("Unauthorized"));
-
-		socket.data.user = {
-			...user,
-			socketId: socket.id,
-		};
-
-		next();
 	}
 
 	private onConnection(socket: Socket) {
 		this.logger.info(`[CONNECT] Socket ${socket.id} connected`);
 
-		socket.use(async (packet, next) => {
-			this.logger.info(`[PACKET] ${JSON.stringify(packet)}`);
-			next();
-		});
-
-		socket.on("ping", (_, callback) => {
-			callback(new Success("pong"));
-		});
+		this.routesHandler(socket);
 
 		socket.on("disconnect", () => {
+			UserStore.getInstance().remove(socket.id);
 			this.logger.info(`[DISCONNECT] Socket ${socket.id} disconnected`);
 		});
 	}
 
-	private extractTokenData(token: string): BaseUser | undefined {
-		try {
-			const payload = jwt.verify(token, EnvConfig.get("PLAYER_JWT_SECRET"));
-			if (!payload) return undefined;
-			return payload as BaseUser;
-		} catch {
-			return undefined;
-		}
+	private routesHandler(socket: Socket) {
+		// Test
+		const testHandler = new TestHandler(socket, this.io);
+		testHandler.registeredEvents();
+
+		// Tic Tac Toe
+		const ticTacToeHandler = new TicTacToeHandler(socket, this.io);
+		ticTacToeHandler.registeredEvents();
 	}
 }
 

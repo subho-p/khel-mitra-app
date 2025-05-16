@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { logger } from "../utils/logger.js";
 
-const REQUIRED_KEYS = ["SOCKET_PORT", "PLAYER_JWT_SECRET", "CORS_ORIGIN"] as const;
+const REQUIRED_KEYS = ["SOCKET_PORT", "PLAYER_JWT_SECRET", "JWT_SECRET", "CORS_ORIGIN"] as const;
 
 class EnvConfig {
 	constructor() {
