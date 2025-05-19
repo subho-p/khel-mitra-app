@@ -5,6 +5,7 @@ import "./globals.css";
 import { Providers } from "@/providers/providers";
 import { AppInit } from "./_app";
 import { Toaster } from "sonner";
+import { Toaster as ReactHotToaster } from "react-hot-toast";
 
 const play = Play({
 	variable: "--font-play",
@@ -32,6 +33,7 @@ export default function RootLayout({
 					<AppInit>
 						{children}
 						<Toaster />
+						<ReactHotToaster position="bottom-right" />
 					</AppInit>
 				</Providers>
 			</body>

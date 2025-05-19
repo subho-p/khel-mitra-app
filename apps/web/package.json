@@ -3,7 +3,7 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "next dev --turbopack --port 6321",
+		"dev": "next dev --turbopack",
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint"
@@ -55,8 +55,10 @@
 		"react-day-picker": "8.10.1",
 		"react-dom": "^19.0.0",
 		"react-hook-form": "^7.56.3",
+		"react-hot-toast": "^2.5.2",
 		"react-resizable-panels": "^3.0.1",
 		"recharts": "^2.15.3",
+		"socket.io-client": "^4.8.1",
 		"sonner": "^2.0.3",
 		"tailwind-merge": "^3.2.0",
 		"vaul": "^1.1.2",

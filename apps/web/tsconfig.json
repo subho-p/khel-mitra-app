@@ -20,7 +20,8 @@
     ],
     "paths": {
 		"@/*": ["./*"],
-		"@/ui/*": ["./components/ui/*"]
+		"@/ui/*": ["./components/ui/*"],
+		"@/tic-tac-toe/*": ["./games/tic-tac-toe/*"]
 	}
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

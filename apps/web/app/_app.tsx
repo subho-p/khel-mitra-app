@@ -1,13 +1,29 @@
-'use client'
+"use client";
 
 import { useSession } from "@/providers/session-provider";
+import { socketManager } from "@/socket/socket.manger";
+import { useEffect } from "react";
 
 export const AppInit = ({ children }: { children: React.ReactNode }) => {
-    const { status } = useSession()
+	const { status } = useSession();
 
-    if (status === "loading") {
-        return <div>Loading...</div>;
-    }
+	useEffect(() => {
+		if (status === "authenticated") {
+			socketManager.connect();
+		}
+	}, [status]);
 
-    return <>{children}</>;
+	useEffect(() => {
+		return () => {
+			if (socketManager.isConnected()) {
+				socketManager.disconnect();
+			}
+		};
+	}, []);
+
+	if (status === "loading") {
+		return <div>Loading...</div>;
+	}
+
+	return <>{children}</>;
 };

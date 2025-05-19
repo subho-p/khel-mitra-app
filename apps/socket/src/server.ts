@@ -4,6 +4,7 @@ import express from "express";
 import SocketService from "./services/socket.services.js";
 import EnvConfig from "./config/env.config.js";
 import cors from "cors";
+import path from "path";
 
 const corsOptions: cors.CorsOptions = {
 	origin: EnvConfig.get("CORS_ORIGIN"),
@@ -13,6 +14,7 @@ const corsOptions: cors.CorsOptions = {
 export function createServer() {
 	const app = express();
 	app.use(express.json());
+	app.use("/admin", express.static(path.join(__dirname, "../public/admin")));
 	const server = http.createServer(app);
 	const io = new Server(server, {
 		cors: {
