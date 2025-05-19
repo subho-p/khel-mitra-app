@@ -38,12 +38,27 @@ export class TicTacToeRoom extends Room<TicTacToePlayer> {
 	}
 
 	/**
+	 * Start the game
+	 * @returns {void}
+	 */
+	start(): void {
+		this.initBoard();
+		this.currentPlayerId = this.players[0]!.id;
+		this.status = "playing";
+	}
+
+	/**
 	 * Move a player
 	 * @param data {playerId: string; cell: number}
 	 */
 	move(playerId: string, cell: number): void {
 		try {
-			const isCurrentPlayer = this.getCurrentPlayer()?.id === playerId;
+			if (this.checkAvailableMoves().length === 0) {
+				throw new Error("Game is over");
+			}
+			const currentPlayer = this.getCurrentPlayer();
+			console.log(currentPlayer);
+			const isCurrentPlayer = currentPlayer?.id === playerId;
 			if (!isCurrentPlayer) {
 				throw new Error("It's not your turn");
 			}
@@ -61,6 +76,19 @@ export class TicTacToeRoom extends Room<TicTacToePlayer> {
 		} catch (error) {
 			throw error;
 		}
+	}
+
+	/**
+	 * Check available moves
+	 * @returns {number[]}
+	 */
+	checkAvailableMoves(): number[] {
+		return this.board.reduce((acc, cell, index) => {
+			if (cell === null) {
+				acc.push(index);
+			}
+			return acc;
+		}, [] as number[]);
 	}
 
 	/**
@@ -114,8 +142,8 @@ export class TicTacToeRoom extends Room<TicTacToePlayer> {
 			status: this.status,
 			winnerId: this.winnerId,
 			hostId: this.hostId,
-            isPrivate: this.isPrivate,
-            maxPlayers: this.maxPlayers
+			isPrivate: this.isPrivate,
+			maxPlayers: this.maxPlayers,
 		};
 	}
 }

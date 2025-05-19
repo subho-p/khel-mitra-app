@@ -1,6 +1,6 @@
 import { GameStatus, SocketUser } from "types";
 
-export abstract class Room<T extends { socketId: string }> {
+export abstract class Room<T extends { id: string; socketId: string }> {
 	protected _roomId: string;
 	protected _roomCode: string;
 	abstract players: T[];
@@ -144,7 +144,7 @@ export abstract class Room<T extends { socketId: string }> {
 	 * @returns {T | undefined}
 	 */
 	getCurrentPlayer(): T | undefined {
-		return this.players.find((p) => p.socketId === this.currentPlayerId);
+		return this.players.find((p) => p.id === this.currentPlayerId);
 	}
 
 	/**
@@ -180,8 +180,7 @@ export abstract class Room<T extends { socketId: string }> {
 	 * Next turn
 	 */
 	nextTurn(): void {
-		this.currentPlayerId =
-			this.players.find((p) => p.socketId !== this.currentPlayerId)?.socketId || null;
+		this.currentPlayerId = this.players.find((p) => p.id !== this.currentPlayerId)?.id || null;
 	}
 
 	/**
@@ -196,9 +195,9 @@ export abstract class Room<T extends { socketId: string }> {
 			currentPlayerId: this.currentPlayerId,
 			status: this.status,
 			winnerId: this.winnerId,
-            hostId: this.hostId,
-            isPrivate: this.isPrivate,
-            maxPlayers: this.maxPlayers,
+			hostId: this.hostId,
+			isPrivate: this.isPrivate,
+			maxPlayers: this.maxPlayers,
 		};
 	}
 

@@ -23,6 +23,15 @@ export class TicTacToeStore {
 	}
 
 	/**
+	 * Get tic tac toe room via room code
+	 * @param roomCode
+	 * @returns {TicTacToeRoom | undefined}
+	 */
+	public getRoomByRoomCode(roomCode: string): TicTacToeRoom | undefined {
+		return Array.from(this.ticTacToeRooms.values()).find((room) => room.roomCode === roomCode);
+	}
+
+	/**
 	 * Add tic tac toe room
 	 * @param roomId
 	 * @param room
