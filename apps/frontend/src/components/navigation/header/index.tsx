@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/8bit/button";
-import { Separator } from "@/components/ui/8bit/separator";
 import { Link, useNavigate } from "@tanstack/react-router";
 
 const navLinks = [
@@ -22,10 +21,6 @@ export const Header = () => {
 
 	return (
 		<header className="flex w-full h-16 border-b border-border z-50 fixed top-0 bg-background/50 backdrop-blur-2xl mx-auto items-center justify-center px-4">
-            <div className="">
-
-            <Separator />
-            </div>
 			<div className="flex w-full max-w-[84rem] justify-between">
 				<div className="flex items-center">
 					<Link to="/">
@@ -40,7 +35,7 @@ export const Header = () => {
 						<nav
 							key={index}
 							className="cursor-pointer text-sm hover:text-primary"
-							// onClick={() => router(item.link)}
+							onClick={() => navigate({ to: item.link })}
 						>
 							{item.name}
 						</nav>
@@ -48,17 +43,10 @@ export const Header = () => {
 				</div>
 
 				<div className="flex items-center gap-8">
-					<Button
-						variant="outline"
-						// onClick={() => router("/auth/signin")}
-					>
+					<Button variant="outline" onClick={() => navigate({ to: "/auth/signin" })}>
 						Sign In
 					</Button>
-					<Button
-					// onClick={() => router("/auth/signup")}
-					>
-						Sign Up
-					</Button>
+					<Button onClick={() => navigate({ to: "/auth/signup" })}>Sign Up</Button>
 				</div>
 			</div>
 		</header>
