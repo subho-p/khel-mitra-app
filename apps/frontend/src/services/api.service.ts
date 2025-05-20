@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const authApiService = axios.create({
+const authApiService = axios.create({
 	baseURL: "/api/auth",
 	withCredentials: true,
 	headers: {
@@ -9,7 +9,7 @@ export const authApiService = axios.create({
 	},
 });
 
-export const apiService = axios.create({
+const apiService = axios.create({
 	baseURL: "/api",
 	withCredentials: true,
 	headers: {
@@ -18,3 +18,14 @@ export const apiService = axios.create({
 	},
 });
 
+apiService.interceptors.response.use(
+	(response) => response.data.data,
+	(error) => Promise.reject(error.response.data)
+);
+
+authApiService.interceptors.response.use(
+	(response) => response.data.data,
+	(error) => Promise.reject(error.response.data)
+);
+
+export { authApiService, apiService };
