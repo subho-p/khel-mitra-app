@@ -11,6 +11,7 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as AuthRouteImport } from './routes/auth/route'
 import { Route as AppRouteImport } from './routes/_app/route'
 import { Route as AppIndexImport } from './routes/_app/index'
 import { Route as AuthSignupImport } from './routes/auth/signup'
@@ -19,6 +20,12 @@ import { Route as AppCommunityImport } from './routes/_app/community'
 import { Route as AppGamesIndexImport } from './routes/_app/games/index'
 
 // Create/Update Routes
+
+const AuthRouteRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const AppRouteRoute = AppRouteImport.update({
   id: '/_app',
@@ -32,15 +39,15 @@ const AppIndexRoute = AppIndexImport.update({
 } as any)
 
 const AuthSignupRoute = AuthSignupImport.update({
-  id: '/auth/signup',
-  path: '/auth/signup',
-  getParentRoute: () => rootRoute,
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => AuthRouteRoute,
 } as any)
 
 const AuthSigninRoute = AuthSigninImport.update({
-  id: '/auth/signin',
-  path: '/auth/signin',
-  getParentRoute: () => rootRoute,
+  id: '/signin',
+  path: '/signin',
+  getParentRoute: () => AuthRouteRoute,
 } as any)
 
 const AppCommunityRoute = AppCommunityImport.update({
@@ -66,6 +73,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRoute
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRoute
+    }
     '/_app/community': {
       id: '/_app/community'
       path: '/community'
@@ -75,17 +89,17 @@ declare module '@tanstack/react-router' {
     }
     '/auth/signin': {
       id: '/auth/signin'
-      path: '/auth/signin'
+      path: '/signin'
       fullPath: '/auth/signin'
       preLoaderRoute: typeof AuthSigninImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof AuthRouteImport
     }
     '/auth/signup': {
       id: '/auth/signup'
-      path: '/auth/signup'
+      path: '/signup'
       fullPath: '/auth/signup'
       preLoaderRoute: typeof AuthSignupImport
-      parentRoute: typeof rootRoute
+      parentRoute: typeof AuthRouteImport
     }
     '/_app/': {
       id: '/_app/'
@@ -122,8 +136,23 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
   AppRouteRouteChildren,
 )
 
+interface AuthRouteRouteChildren {
+  AuthSigninRoute: typeof AuthSigninRoute
+  AuthSignupRoute: typeof AuthSignupRoute
+}
+
+const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthSigninRoute: AuthSigninRoute,
+  AuthSignupRoute: AuthSignupRoute,
+}
+
+const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
+  AuthRouteRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '': typeof AppRouteRouteWithChildren
+  '/auth': typeof AuthRouteRouteWithChildren
   '/community': typeof AppCommunityRoute
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
@@ -132,6 +161,7 @@ export interface FileRoutesByFullPath {
 }
 
 export interface FileRoutesByTo {
+  '/auth': typeof AuthRouteRouteWithChildren
   '/community': typeof AppCommunityRoute
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
@@ -142,6 +172,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_app': typeof AppRouteRouteWithChildren
+  '/auth': typeof AuthRouteRouteWithChildren
   '/_app/community': typeof AppCommunityRoute
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
@@ -153,16 +184,18 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | ''
+    | '/auth'
     | '/community'
     | '/auth/signin'
     | '/auth/signup'
     | '/'
     | '/games'
   fileRoutesByTo: FileRoutesByTo
-  to: '/community' | '/auth/signin' | '/auth/signup' | '/' | '/games'
+  to: '/auth' | '/community' | '/auth/signin' | '/auth/signup' | '/' | '/games'
   id:
     | '__root__'
     | '/_app'
+    | '/auth'
     | '/_app/community'
     | '/auth/signin'
     | '/auth/signup'
@@ -173,14 +206,12 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   AppRouteRoute: typeof AppRouteRouteWithChildren
-  AuthSigninRoute: typeof AuthSigninRoute
-  AuthSignupRoute: typeof AuthSignupRoute
+  AuthRouteRoute: typeof AuthRouteRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   AppRouteRoute: AppRouteRouteWithChildren,
-  AuthSigninRoute: AuthSigninRoute,
-  AuthSignupRoute: AuthSignupRoute,
+  AuthRouteRoute: AuthRouteRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -194,8 +225,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/_app",
-        "/auth/signin",
-        "/auth/signup"
+        "/auth"
       ]
     },
     "/_app": {
@@ -206,15 +236,24 @@ export const routeTree = rootRoute
         "/_app/games/"
       ]
     },
+    "/auth": {
+      "filePath": "auth/route.tsx",
+      "children": [
+        "/auth/signin",
+        "/auth/signup"
+      ]
+    },
     "/_app/community": {
       "filePath": "_app/community.tsx",
       "parent": "/_app"
     },
     "/auth/signin": {
-      "filePath": "auth/signin.tsx"
+      "filePath": "auth/signin.tsx",
+      "parent": "/auth"
     },
     "/auth/signup": {
-      "filePath": "auth/signup.tsx"
+      "filePath": "auth/signup.tsx",
+      "parent": "/auth"
     },
     "/_app/": {
       "filePath": "_app/index.tsx",
