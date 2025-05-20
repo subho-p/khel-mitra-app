@@ -4,9 +4,17 @@ import { Label } from "@/components/ui/label";
 import { type SignUpSchema, signUpSchema } from "@/schemas/auth.schema";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ErrorMessage } from "../form-message";
+import { ErrorMessage, SuccessMessage } from "../form-message";
+import React from "react";
+import { useAuth } from "@/contexts/auth.context";
 
 export const SignupForm = () => {
+	const [isLoading, setIsLoading] = React.useState(false);
+	const [errorMessage, setErrorMessage] = React.useState<string>();
+	const [successMessage, setSuccessMessage] = React.useState<string>();
+
+	const { signUp } = useAuth();
+
 	const signinForm = useForm<SignUpSchema>({
 		resolver: zodResolver(signUpSchema),
 		defaultValues: {
@@ -22,7 +30,20 @@ export const SignupForm = () => {
 		formState: { errors, isSubmitting },
 	} = signinForm;
 
-	const onSubmitSignupForm: SubmitHandler<SignUpSchema> = () => {};
+	const onSubmitSignupForm: SubmitHandler<SignUpSchema> = async (values: SignUpSchema) => {
+		setIsLoading(true);
+		setErrorMessage(undefined);
+		setSuccessMessage(undefined);
+
+		await signUp(values)
+			.then(() => {
+				setSuccessMessage("Signed up successfully");
+			})
+			.catch(() => {
+				setErrorMessage("Signup failed");
+			})
+			.finally(() => setIsLoading(false));
+	};
 
 	return (
 		<form onSubmit={handleSubmit(onSubmitSignupForm)}>
@@ -42,8 +63,11 @@ export const SignupForm = () => {
 					<Input {...register("confirmPassword")} type="password" required />
 					<ErrorMessage error={errors.confirmPassword?.message} />
 				</div>
-				<Button type="submit" className="w-full" disabled={isSubmitting}>
-					Sign up
+
+				<ErrorMessage error={errorMessage} />
+				<SuccessMessage message={successMessage} />
+				<Button type="submit" className="w-full" disabled={isSubmitting || isLoading}>
+					{isLoading ? "Signing up..." : "Sign up"}
 				</Button>
 			</div>
 		</form>
