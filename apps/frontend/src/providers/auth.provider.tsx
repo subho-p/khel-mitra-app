@@ -31,43 +31,49 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 			});
 	}, []);
 
-	const signIn = React.useCallback(async (values: SignInSchema) => {
-		setStatus("loading");
+	const signIn = React.useCallback(
+		async (values: SignInSchema) => {
+			setStatus("loading");
 
-		signinService(values)
-			.then((res) => {
-				localStore.set("user_status", {
-					isLoggedIn: true,
-					access_token: res.accessToken,
+			signinService(values)
+				.then((res) => {
+					localStore.set("user_status", {
+						isLoggedIn: true,
+						access_token: res.accessToken,
+					});
+
+					setStatus("authenticated");
+
+					getMe();
+				})
+				.catch(() => {
+					setStatus("unauthenticated");
 				});
+		},
+		[getMe]
+	);
 
-				setStatus("authenticated");
+	const signUp = React.useCallback(
+		async (values: SignUpSchema) => {
+			setStatus("loading");
 
-				getMe();
-			})
-			.catch(() => {
-				setStatus("unauthenticated");
-			});
-	}, [getMe]);
+			signupService(values)
+				.then((res) => {
+					localStore.set("user_status", {
+						isLoggedIn: true,
+						access_token: res.accessToken,
+					});
 
-	const signUp = React.useCallback(async (values: SignUpSchema) => {
-		setStatus("loading");
+					setStatus("authenticated");
 
-		signupService(values)
-			.then((res) => {
-				localStore.set("user_status", {
-					isLoggedIn: true,
-					access_token: res.accessToken,
+					getMe();
+				})
+				.catch(() => {
+					setStatus("unauthenticated");
 				});
-
-				setStatus("authenticated");
-
-				getMe();
-			})
-			.catch(() => {
-				setStatus("unauthenticated");
-			});
-	}, [getMe]);
+		},
+		[getMe]
+	);
 
 	const signOut = React.useCallback(async () => {
 		signoutService().then(() => {
@@ -78,8 +84,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	}, []);
 
 	const refresh = React.useCallback(async () => {
-		if (!localStore.has("user_status")) return;
-
 		const userStatus = localStore.get("user_status", localStorageSchema.shape.userStatus);
 
 		if (userStatus?.isLoggedIn) {
@@ -97,6 +101,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 				.catch(() => {
 					setStatus("unauthenticated");
 				});
+		} else {
+			localStore.remove("user_status");
+			setUser(null);
+			setStatus("unauthenticated");
 		}
 	}, [getMe]);
 
