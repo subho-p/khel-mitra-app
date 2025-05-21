@@ -17,7 +17,9 @@ import { Route as AppIndexImport } from './routes/_app/index'
 import { Route as AuthSignupImport } from './routes/auth/signup'
 import { Route as AuthSigninImport } from './routes/auth/signin'
 import { Route as AppCommunityImport } from './routes/_app/community'
+import { Route as AppAuthImport } from './routes/_app/_auth'
 import { Route as AppGamesIndexImport } from './routes/_app/games/index'
+import { Route as AppAuthProfileImport } from './routes/_app/_auth.profile'
 
 // Create/Update Routes
 
@@ -56,10 +58,21 @@ const AppCommunityRoute = AppCommunityImport.update({
   getParentRoute: () => AppRouteRoute,
 } as any)
 
+const AppAuthRoute = AppAuthImport.update({
+  id: '/_auth',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+
 const AppGamesIndexRoute = AppGamesIndexImport.update({
   id: '/games/',
   path: '/games/',
   getParentRoute: () => AppRouteRoute,
+} as any)
+
+const AppAuthProfileRoute = AppAuthProfileImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AppAuthRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -79,6 +92,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRoute
+    }
+    '/_app/_auth': {
+      id: '/_app/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AppAuthImport
+      parentRoute: typeof AppRouteImport
     }
     '/_app/community': {
       id: '/_app/community'
@@ -108,6 +128,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexImport
       parentRoute: typeof AppRouteImport
     }
+    '/_app/_auth/profile': {
+      id: '/_app/_auth/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AppAuthProfileImport
+      parentRoute: typeof AppAuthImport
+    }
     '/_app/games/': {
       id: '/_app/games/'
       path: '/games'
@@ -120,13 +147,26 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
+interface AppAuthRouteChildren {
+  AppAuthProfileRoute: typeof AppAuthProfileRoute
+}
+
+const AppAuthRouteChildren: AppAuthRouteChildren = {
+  AppAuthProfileRoute: AppAuthProfileRoute,
+}
+
+const AppAuthRouteWithChildren =
+  AppAuthRoute._addFileChildren(AppAuthRouteChildren)
+
 interface AppRouteRouteChildren {
+  AppAuthRoute: typeof AppAuthRouteWithChildren
   AppCommunityRoute: typeof AppCommunityRoute
   AppIndexRoute: typeof AppIndexRoute
   AppGamesIndexRoute: typeof AppGamesIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
+  AppAuthRoute: AppAuthRouteWithChildren,
   AppCommunityRoute: AppCommunityRoute,
   AppIndexRoute: AppIndexRoute,
   AppGamesIndexRoute: AppGamesIndexRoute,
@@ -151,21 +191,24 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 )
 
 export interface FileRoutesByFullPath {
-  '': typeof AppRouteRouteWithChildren
+  '': typeof AppAuthRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
   '/community': typeof AppCommunityRoute
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
   '/': typeof AppIndexRoute
+  '/profile': typeof AppAuthProfileRoute
   '/games': typeof AppGamesIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/auth': typeof AuthRouteRouteWithChildren
+  '': typeof AppAuthRouteWithChildren
   '/community': typeof AppCommunityRoute
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
   '/': typeof AppIndexRoute
+  '/profile': typeof AppAuthProfileRoute
   '/games': typeof AppGamesIndexRoute
 }
 
@@ -173,10 +216,12 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_app': typeof AppRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
+  '/_app/_auth': typeof AppAuthRouteWithChildren
   '/_app/community': typeof AppCommunityRoute
   '/auth/signin': typeof AuthSigninRoute
   '/auth/signup': typeof AuthSignupRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/_auth/profile': typeof AppAuthProfileRoute
   '/_app/games/': typeof AppGamesIndexRoute
 }
 
@@ -189,17 +234,28 @@ export interface FileRouteTypes {
     | '/auth/signin'
     | '/auth/signup'
     | '/'
+    | '/profile'
     | '/games'
   fileRoutesByTo: FileRoutesByTo
-  to: '/auth' | '/community' | '/auth/signin' | '/auth/signup' | '/' | '/games'
+  to:
+    | '/auth'
+    | ''
+    | '/community'
+    | '/auth/signin'
+    | '/auth/signup'
+    | '/'
+    | '/profile'
+    | '/games'
   id:
     | '__root__'
     | '/_app'
     | '/auth'
+    | '/_app/_auth'
     | '/_app/community'
     | '/auth/signin'
     | '/auth/signup'
     | '/_app/'
+    | '/_app/_auth/profile'
     | '/_app/games/'
   fileRoutesById: FileRoutesById
 }
@@ -231,6 +287,7 @@ export const routeTree = rootRoute
     "/_app": {
       "filePath": "_app/route.tsx",
       "children": [
+        "/_app/_auth",
         "/_app/community",
         "/_app/",
         "/_app/games/"
@@ -241,6 +298,13 @@ export const routeTree = rootRoute
       "children": [
         "/auth/signin",
         "/auth/signup"
+      ]
+    },
+    "/_app/_auth": {
+      "filePath": "_app/_auth.tsx",
+      "parent": "/_app",
+      "children": [
+        "/_app/_auth/profile"
       ]
     },
     "/_app/community": {
@@ -258,6 +322,10 @@ export const routeTree = rootRoute
     "/_app/": {
       "filePath": "_app/index.tsx",
       "parent": "/_app"
+    },
+    "/_app/_auth/profile": {
+      "filePath": "_app/_auth.profile.tsx",
+      "parent": "/_app/_auth"
     },
     "/_app/games/": {
       "filePath": "_app/games/index.tsx",
