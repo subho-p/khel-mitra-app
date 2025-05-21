@@ -4,6 +4,7 @@ import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 import { useAuth } from "./contexts/auth.context";
 import { AuthProvider } from "./providers/auth.provider";
+import { SocketProvider } from "./socket/socket.provider";
 
 // Create a new router instance
 const router = createRouter({
@@ -34,7 +35,9 @@ const InnerApp = () => {
 const App = () => {
 	return (
 		<AuthProvider>
-			<InnerApp />
+			<SocketProvider>
+				<InnerApp />
+			</SocketProvider>
 		</AuthProvider>
 	);
 };
