@@ -56,7 +56,9 @@ export default function Home() {
 
 			<section className="py-16 bg-primary/5">
 				<div className="container mx-auto px-4">
-					<h3 className="text-2xl md:text-3xl text-amber-500 font-bold text-center mb-12">Play Your Way</h3>
+					<h3 className="text-2xl md:text-3xl text-amber-500 font-bold text-center mb-12">
+						Play Your Way
+					</h3>
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
 						<PlayOption
 							title="Local Multiplayer"
@@ -91,7 +93,7 @@ function GameCard({ game }: { game: (typeof Games)[number] }) {
 		>
 			<Card
 				className="md:min-h-80 bg-muted border-muted-foreground/50 shadow-inherit hover:cursor-pointer"
-				onClick={() => navigate({ to: game.link })}
+				onClick={() => navigate({ to: "/games/$game", params: { game: game.param } })}
 			>
 				<CardHeader>
 					<CardTitle className="text-center">

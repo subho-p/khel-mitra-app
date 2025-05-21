@@ -19,7 +19,9 @@ import { Route as AuthSigninImport } from './routes/auth/signin'
 import { Route as AppCommunityImport } from './routes/_app/community'
 import { Route as AppAuthImport } from './routes/_app/_auth'
 import { Route as AppGamesIndexImport } from './routes/_app/games/index'
+import { Route as AppGamesGameImport } from './routes/_app/games/$game'
 import { Route as AppAuthProfileImport } from './routes/_app/_auth.profile'
+import { Route as AppGamesGameLeaderboardImport } from './routes/_app/games/$game.leaderboard'
 
 // Create/Update Routes
 
@@ -69,10 +71,22 @@ const AppGamesIndexRoute = AppGamesIndexImport.update({
   getParentRoute: () => AppRouteRoute,
 } as any)
 
+const AppGamesGameRoute = AppGamesGameImport.update({
+  id: '/games/$game',
+  path: '/games/$game',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+
 const AppAuthProfileRoute = AppAuthProfileImport.update({
   id: '/profile',
   path: '/profile',
   getParentRoute: () => AppAuthRoute,
+} as any)
+
+const AppGamesGameLeaderboardRoute = AppGamesGameLeaderboardImport.update({
+  id: '/leaderboard',
+  path: '/leaderboard',
+  getParentRoute: () => AppGamesGameRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -135,12 +149,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAuthProfileImport
       parentRoute: typeof AppAuthImport
     }
+    '/_app/games/$game': {
+      id: '/_app/games/$game'
+      path: '/games/$game'
+      fullPath: '/games/$game'
+      preLoaderRoute: typeof AppGamesGameImport
+      parentRoute: typeof AppRouteImport
+    }
     '/_app/games/': {
       id: '/_app/games/'
       path: '/games'
       fullPath: '/games'
       preLoaderRoute: typeof AppGamesIndexImport
       parentRoute: typeof AppRouteImport
+    }
+    '/_app/games/$game/leaderboard': {
+      id: '/_app/games/$game/leaderboard'
+      path: '/leaderboard'
+      fullPath: '/games/$game/leaderboard'
+      preLoaderRoute: typeof AppGamesGameLeaderboardImport
+      parentRoute: typeof AppGamesGameImport
     }
   }
 }
@@ -158,10 +186,23 @@ const AppAuthRouteChildren: AppAuthRouteChildren = {
 const AppAuthRouteWithChildren =
   AppAuthRoute._addFileChildren(AppAuthRouteChildren)
 
+interface AppGamesGameRouteChildren {
+  AppGamesGameLeaderboardRoute: typeof AppGamesGameLeaderboardRoute
+}
+
+const AppGamesGameRouteChildren: AppGamesGameRouteChildren = {
+  AppGamesGameLeaderboardRoute: AppGamesGameLeaderboardRoute,
+}
+
+const AppGamesGameRouteWithChildren = AppGamesGameRoute._addFileChildren(
+  AppGamesGameRouteChildren,
+)
+
 interface AppRouteRouteChildren {
   AppAuthRoute: typeof AppAuthRouteWithChildren
   AppCommunityRoute: typeof AppCommunityRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppGamesGameRoute: typeof AppGamesGameRouteWithChildren
   AppGamesIndexRoute: typeof AppGamesIndexRoute
 }
 
@@ -169,6 +210,7 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppAuthRoute: AppAuthRouteWithChildren,
   AppCommunityRoute: AppCommunityRoute,
   AppIndexRoute: AppIndexRoute,
+  AppGamesGameRoute: AppGamesGameRouteWithChildren,
   AppGamesIndexRoute: AppGamesIndexRoute,
 }
 
@@ -198,7 +240,9 @@ export interface FileRoutesByFullPath {
   '/auth/signup': typeof AuthSignupRoute
   '/': typeof AppIndexRoute
   '/profile': typeof AppAuthProfileRoute
+  '/games/$game': typeof AppGamesGameRouteWithChildren
   '/games': typeof AppGamesIndexRoute
+  '/games/$game/leaderboard': typeof AppGamesGameLeaderboardRoute
 }
 
 export interface FileRoutesByTo {
@@ -209,7 +253,9 @@ export interface FileRoutesByTo {
   '/auth/signup': typeof AuthSignupRoute
   '/': typeof AppIndexRoute
   '/profile': typeof AppAuthProfileRoute
+  '/games/$game': typeof AppGamesGameRouteWithChildren
   '/games': typeof AppGamesIndexRoute
+  '/games/$game/leaderboard': typeof AppGamesGameLeaderboardRoute
 }
 
 export interface FileRoutesById {
@@ -222,7 +268,9 @@ export interface FileRoutesById {
   '/auth/signup': typeof AuthSignupRoute
   '/_app/': typeof AppIndexRoute
   '/_app/_auth/profile': typeof AppAuthProfileRoute
+  '/_app/games/$game': typeof AppGamesGameRouteWithChildren
   '/_app/games/': typeof AppGamesIndexRoute
+  '/_app/games/$game/leaderboard': typeof AppGamesGameLeaderboardRoute
 }
 
 export interface FileRouteTypes {
@@ -235,7 +283,9 @@ export interface FileRouteTypes {
     | '/auth/signup'
     | '/'
     | '/profile'
+    | '/games/$game'
     | '/games'
+    | '/games/$game/leaderboard'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
@@ -245,7 +295,9 @@ export interface FileRouteTypes {
     | '/auth/signup'
     | '/'
     | '/profile'
+    | '/games/$game'
     | '/games'
+    | '/games/$game/leaderboard'
   id:
     | '__root__'
     | '/_app'
@@ -256,7 +308,9 @@ export interface FileRouteTypes {
     | '/auth/signup'
     | '/_app/'
     | '/_app/_auth/profile'
+    | '/_app/games/$game'
     | '/_app/games/'
+    | '/_app/games/$game/leaderboard'
   fileRoutesById: FileRoutesById
 }
 
@@ -290,6 +344,7 @@ export const routeTree = rootRoute
         "/_app/_auth",
         "/_app/community",
         "/_app/",
+        "/_app/games/$game",
         "/_app/games/"
       ]
     },
@@ -327,9 +382,20 @@ export const routeTree = rootRoute
       "filePath": "_app/_auth.profile.tsx",
       "parent": "/_app/_auth"
     },
+    "/_app/games/$game": {
+      "filePath": "_app/games/$game.tsx",
+      "parent": "/_app",
+      "children": [
+        "/_app/games/$game/leaderboard"
+      ]
+    },
     "/_app/games/": {
       "filePath": "_app/games/index.tsx",
       "parent": "/_app"
+    },
+    "/_app/games/$game/leaderboard": {
+      "filePath": "_app/games/$game.leaderboard.tsx",
+      "parent": "/_app/games/$game"
     }
   }
 }
