@@ -1,0 +1,20 @@
+# Ignore node_modules
+node_modules/
+
+# Ignore build outputs
+dist/
+build/
+out/
+.turbo/
+
+# Ignore minified files
+*.min.js
+
+# Ignore compiled files
+
+*.json
+*.lock
+*.tsbuildinfo
+*.d.ts
+*.yaml
+*.yml
