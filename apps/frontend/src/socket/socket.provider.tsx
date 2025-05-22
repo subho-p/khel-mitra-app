@@ -4,26 +4,34 @@ import { SocketManager } from "./socket.manager";
 import { useAuth } from "@/contexts/auth.context";
 
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
-	const { isAuthenticated } = useAuth();
+    const { status } = useAuth();
 
-	useEffect(() => {
-		if (isAuthenticated) {
-			SocketManager.getInstance().connect();
-		} else {
-			SocketManager.getInstance().disconnect();
-		}
-	}, [isAuthenticated]);
+    useEffect(() => {
+        if (status === "authenticated") {
+            SocketManager.getInstance().connect();
+        }
 
-	return (
-		<SocketContext.Provider
-			value={{
-				socket: SocketManager.getInstance().socket,
-				connect: SocketManager.getInstance().connect,
-				disconnect: SocketManager.getInstance().disconnect,
-				isConnected: SocketManager.getInstance().socket?.connected || false,
-			}}
-		>
-			{children}
-		</SocketContext.Provider>
-	);
+        if (status === "unauthenticated") {
+            SocketManager.getInstance().disconnect();
+        }
+    }, [status]);
+
+    useEffect(() => {
+        return () => {
+            SocketManager.getInstance().disconnect();
+        };
+    }, []);
+
+    return (
+        <SocketContext.Provider
+            value={{
+                socket: SocketManager.getInstance().socket,
+                connect: SocketManager.getInstance().connect,
+                disconnect: SocketManager.getInstance().disconnect,
+                isConnected: SocketManager.getInstance().socket?.connected || false,
+            }}
+        >
+            {children}
+        </SocketContext.Provider>
+    );
 };
