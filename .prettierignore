@@ -18,3 +18,5 @@ out/
 *.d.ts
 *.yaml
 *.yml
+
+apps/frontend/src/components/ui/**
