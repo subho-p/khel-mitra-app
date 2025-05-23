@@ -18,32 +18,32 @@ export abstract class EventHandler {
 
 	public registeredEvents() {
 		for (const event of this.events) {
-			const eventName = this.toEventName(event);
-			const methodName = this.toCamelCase(event);
-			const originalhandler = (this as any)[methodName]?.bind(this);
+            const eventName = this.toEventName(event);
+            const methodName = this.toCamelCase(event);
+            const originalhandler = (this as any)[methodName]?.bind(this);
 
-            logger.info(`Registering event (${eventName})`);
+            // logger.info(`Registering event (${eventName})`);
 
-			if (!originalhandler) {
-                logger.error(`No handler found for event (${eventName})`);
+            if (!originalhandler) {
+                // logger.error(`No handler found for event (${eventName})`);
                 continue;
             }
 
-			const handler = (data: any, callback?: Function) => {
-				this._currentEvent = eventName;
-				this._currentCallback = callback;
+            const handler = (data: any, callback?: Function) => {
+                this._currentEvent = eventName;
+                this._currentCallback = callback;
 
-				try {
-					originalhandler(data, callback);
-				} catch (error: any) {
-					this.failure(error.message || "Something went wrong");
-				} finally {
-					this._currentEvent = undefined;
-					this._currentCallback = undefined;
-				}
-			};
-			this.socket.on(eventName, handler);
-		}
+                try {
+                    originalhandler(data, callback);
+                } catch (error: any) {
+                    this.failure(error.message || "Something went wrong");
+                } finally {
+                    this._currentEvent = undefined;
+                    this._currentCallback = undefined;
+                }
+            };
+            this.socket.on(eventName, handler);
+        }
 	}
 
 	protected emit(event: string, data: any): void {
