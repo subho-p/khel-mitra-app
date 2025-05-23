@@ -42,7 +42,7 @@ export const AuthCardWrapper = ({
 					</div>
 				)}
 
-                {footer}
+				{footer}
 			</CardFooter>
 		</Card>
 	);

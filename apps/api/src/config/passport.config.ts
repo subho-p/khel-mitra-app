@@ -18,14 +18,14 @@ class PassportConfig {
 		passport.use(this.jwtStrategy());
 		passport.use(this.localStrategy());
 
-        passport.serializeUser((user: any, done) => {
-            done(null, user.id);
-        });
+		passport.serializeUser((user: any, done) => {
+			done(null, user.id);
+		});
 
-        passport.deserializeUser(async (id: string, done) => {
-            const user = await this.userService.getUserById(id);
-            done(null, user);
-        });
+		passport.deserializeUser(async (id: string, done) => {
+			const user = await this.userService.getUserById(id);
+			done(null, user);
+		});
 	}
 
 	private localStrategy() {

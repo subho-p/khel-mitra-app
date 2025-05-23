@@ -10,10 +10,10 @@ export class TestHandler extends EventHandler {
 
 		logger.info(`User ${user.socketId} test`);
 
-        if (!user) {
-            this.failure("Unauthorized user");
-            return;
-        }
+		if (!user) {
+			this.failure("Unauthorized user");
+			return;
+		}
 		this.success({ user });
 	}
 }

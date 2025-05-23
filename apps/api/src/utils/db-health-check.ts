@@ -8,6 +8,6 @@ export const dbHealthCheck = async () => {
 		logger.info("✅ Database is healthy");
 	} catch (error) {
 		logger.error(`Database is unhealthy: ${error}`);
-        process.exit(1);
+		process.exit(1);
 	}
 };

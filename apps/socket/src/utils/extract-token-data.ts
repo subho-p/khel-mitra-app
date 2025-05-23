@@ -3,7 +3,6 @@ import { BaseUser } from "../types";
 import jwt from "jsonwebtoken";
 import EnvConfig from "config/env.config";
 
-
 export function extractTokenData(socket: Socket): BaseUser | undefined {
 	try {
 		const token = extractTokenFromSocket(socket);

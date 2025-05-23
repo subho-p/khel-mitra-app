@@ -1,5 +1,3 @@
 export const LocalTicTacToeGame = () => {
-    return (
-        <div>LocalTicTacToeGame</div>
-    )
-}
+	return <div>LocalTicTacToeGame</div>;
+};

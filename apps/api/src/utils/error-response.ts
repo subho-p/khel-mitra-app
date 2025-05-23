@@ -2,13 +2,13 @@
 export class ApiError extends Error {
 	status: number;
 	name: string;
-    stack?: string | undefined;
+	stack?: string | undefined;
 
 	constructor(status: number, message: string, stack?: string) {
 		super(message);
 		this.status = status;
 		this.name = this.constructor.name;
-        this.stack = stack;
+		this.stack = stack;
 	}
 }
 
