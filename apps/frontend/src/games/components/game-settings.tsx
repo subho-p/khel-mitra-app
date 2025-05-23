@@ -121,7 +121,8 @@ export const GameSettings = ({
 
                     {/* Token Selection */}
                     <AnimatePresence>
-                        {settings.privateRoomOption === "create" && (
+                        {(settings.privateRoomOption === "create" ||
+                            settings.onlineMode === "public") && (
                             <ContainerItem key="token-selection">
                                 <ContainerItemTitle text="Tokens" />
                                 <div className="flex gap-2">
@@ -131,7 +132,7 @@ export const GameSettings = ({
                                             text={noOfTokens.toString()}
                                             onClick={() => setCoins(noOfTokens)}
                                             isDefault={settings.coins === noOfTokens}
-                                            disabled={ user!.coins < noOfTokens }
+                                            disabled={user!.coins < noOfTokens}
                                         />
                                     ))}
                                 </div>
@@ -140,7 +141,10 @@ export const GameSettings = ({
                     </AnimatePresence>
 
                     {/* Navigation Buttons */}
-                    <motion.div className="w-full flex justify-between mt-6" variants={itemVariants}>
+                    <motion.div
+                        className="w-full flex justify-between mt-6"
+                        variants={itemVariants}
+                    >
                         <Button
                             variant="outline"
                             size="lg"

@@ -1,7 +1,7 @@
 import type { SocketResponse } from "@/types/socket.type";
 import { Socket, io } from "socket.io-client";
 import { handleSocketResponse } from "./socket.utils";
-
+import { delay } from "@/lib/utils";
 
 export class SocketManager {
     private static instance: SocketManager;
@@ -54,10 +54,22 @@ export class SocketManager {
         }
     }
 
-    public emitWithAck<T>(event: string, data: object): Promise<T | null> {
+    public async emit(event: string, data: object, callback?: (res: SocketResponse) => void) {
         if (!this._socket || !this._socket.connected) {
             this.connect();
         }
+
+        await this.addDelay();
+
+        this._socket?.emit(event, data, callback);
+    }
+
+    public async emitWithAck<T>(event: string, data: object): Promise<T | null> {
+        if (!this._socket || !this._socket.connected) {
+            this.connect();
+        }
+
+        await this.addDelay();
 
         return new Promise((resolve, reject) => {
             this._socket?.emit(event, data, (res: SocketResponse<T>) => {
@@ -73,8 +85,9 @@ export class SocketManager {
         });
     }
 
-    public on(event: string, handler: (...args: any[]) => void) {
+    public async on(event: string, handler: (...args: any[]) => void) {
         if (!this._socket) throw new Error("Socket not connected");
+        await this.addDelay();
 
         this._socket.on(event, handler);
     }
@@ -83,6 +96,12 @@ export class SocketManager {
         if (!this._socket) throw new Error("Socket not connected");
 
         this._socket.off(event, handler);
+    }
+
+    private async addDelay() {
+        if (import.meta.env.VITE_APP_ENV === "development") {
+            return await delay(1000);
+        }
     }
 }
 

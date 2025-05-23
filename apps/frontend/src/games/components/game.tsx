@@ -1,51 +1,48 @@
-import { useState } from "react";
 import { GameSettings } from "./game-settings";
-import type { Games } from "@/constants/game.constant";
 import { useGameSettingsState } from "../settings/game-settings.context";
 import { useRouter } from "@tanstack/react-router";
 import { TicTacToeGame } from "@/games/tic-tac-toe/components";
+import { useGameManager } from "./game.manager.context";
 
-export type GameFlow = "idle" | "localGame" | "randomGame" | "createRoom" | "joinRoom";
-
-export const Game = ({ game }: { game: (typeof Games)[number] }) => {
+export const Game = () => {
     const router = useRouter();
-    const [gameFlow, setGameFlow] = useState<GameFlow>("idle");
+    const { currentGame: game, gameFlow, onChangeGameFlow } = useGameManager();
 
     const { mode, onlineMode, privateRoomOption } = useGameSettingsState();
 
     const handleNext = () => {
         router.navigate({
             to: `/games/$game`,
-            params: { game: game.param },
+            params: { game: game!.param },
             search: { mode },
         });
 
         if (mode === "local") {
-            setGameFlow("localGame");
+            onChangeGameFlow("localGame");
         } else {
             if (onlineMode === "public") {
-                setGameFlow("randomGame");
+                onChangeGameFlow("randomGame");
             } else if (privateRoomOption === "create") {
-                setGameFlow("createRoom");
+                onChangeGameFlow("createRoom");
             } else if (privateRoomOption === "join") {
-                setGameFlow("joinRoom");
+                onChangeGameFlow("joinRoom");
             }
         }
     };
 
     if (gameFlow === "idle") {
-        return <GameSettings handleNext={handleNext} onReset={() => setGameFlow("idle")} />;
+        return <GameSettings handleNext={handleNext} onReset={() => onChangeGameFlow("idle")} />;
     }
 
-    if (game.name === "Tic Tac Toe") {
-        return <TicTacToeGame gameFlow={gameFlow} />;
+    if (game?.name === "Tic Tac Toe") {
+        return <TicTacToeGame />;
     }
 
-    if (game.name === "Checkers") {
+    if (game?.name === "Checkers") {
         return <Checkers />;
     }
 
-    if (game.name === "Rock Paper Scissors") {
+    if (game?.name === "Rock Paper Scissors") {
         return <RockPaperScissors />;
     }
 };
