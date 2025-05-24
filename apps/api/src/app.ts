@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import session from "express-session";
+import session, { MemoryStore } from "express-session";
 import passport from "passport";
 import "./config/passport.config.js";
 
@@ -29,6 +29,7 @@ app.use(
 		secret: process.env.SESSION_SECRET!,
 		resave: false,
 		saveUninitialized: false,
+        store: new MemoryStore(),
 		cookie: {
 			secure: false,
 		},
