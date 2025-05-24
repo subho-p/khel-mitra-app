@@ -1,4 +1,4 @@
-import { TicTacToeRoom } from "rooms/tic-tac-toe.room";
+import { TicTacToeRoom } from "../rooms/tic-tac-toe.room.js";
 
 export class TicTacToeStore {
 	private static instance: TicTacToeStore;

@@ -1,4 +1,4 @@
-import { GameStatus, SocketUser } from "types";
+import { GameStatus, SocketUser } from "../types/index.js";
 
 export abstract class Room<T extends { id: string; socketId: string }> {
 	protected _roomId: string;

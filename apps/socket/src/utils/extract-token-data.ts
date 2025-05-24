@@ -1,7 +1,7 @@
 import { Socket } from "socket.io";
-import { BaseUser } from "../types";
+import { BaseUser } from "../types/index.js";
 import jwt from "jsonwebtoken";
-import EnvConfig from "config/env.config";
+import EnvConfig from "../config/env.config.js";
 
 export function extractTokenData(socket: Socket): BaseUser | undefined {
 	try {

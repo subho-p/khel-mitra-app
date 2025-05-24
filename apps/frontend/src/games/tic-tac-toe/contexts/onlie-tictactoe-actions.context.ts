@@ -257,7 +257,7 @@ const OnlineTictactoeActionsContext = createReactContext(() => {
 	// Call the function to listen for player left events
 	useEffect(() => {
 		function onPlayerLeft() {
-			ticTacToeSocketManager.onPlayerLeft((res) => {
+			ticTacToeSocketManager.onPlayerLeft(() => {
 				// clear the room data
 				resetCreatedRoomData();
 				handleGameManagerReset();

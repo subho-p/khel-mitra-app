@@ -1,5 +1,5 @@
-import { Player, SocketUser } from "types";
-import { Room } from "./room";
+import { Player, SocketUser } from "../types/index.js";
+import { Room } from "./room.js";
 
 type TicTacToeSymbol = "X" | "O";
 
@@ -105,7 +105,6 @@ export class TicTacToeRoom extends Room<TicTacToePlayer> {
 			[0, 4, 8],
 			[2, 4, 6],
 		] as const;
-
 
 		let winnerSymbol: TicTacToeSymbol | null = null;
 		winningCombinations.forEach((combination) => {

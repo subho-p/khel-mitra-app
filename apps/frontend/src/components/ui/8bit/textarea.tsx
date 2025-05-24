@@ -1,19 +1,13 @@
-import { Press_Start_2P } from "next/font/google"
-import { cva, VariantProps } from "class-variance-authority"
+import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 import { Textarea as ShadcnTextarea } from "@/components/ui/textarea"
-
-const pressStart = Press_Start_2P({
-  weight: ["400"],
-  subsets: ["latin"],
-})
 
 export const inputVariants = cva("", {
   variants: {
     font: {
       normal: "",
-      retro: pressStart.className,
+      retro: "",
     },
   },
   defaultVariants: {
@@ -36,7 +30,7 @@ function Textarea({ ...props }: BitTextareaProps) {
         placeholder="Enter text"
         className={cn(
           "rounded-none transition-transform ring-0 border-0",
-          font !== "normal" && pressStart.className,
+          font !== "normal",
           className
         )}
       />

@@ -2,9 +2,9 @@ import { GameEvent, GameEvents } from "../constants/game-events.constants.js";
 import { EventHandler } from "./handler.js";
 import { SocketUser } from "../types/index.js";
 import { TicTacToeRoom } from "../rooms/tic-tac-toe.room.js";
-import { userStore, ticTacToeStore } from "../stores";
-import { logger } from "utils/logger.js";
-import { Success } from "utils/reponse.js";
+import { userStore, ticTacToeStore } from "../stores/index.js";
+import { logger } from "../utils/logger.js";
+import { Success } from "../utils/reponse.js";
 
 export class TicTacToeHandler extends EventHandler {
 	protected readonly nameSpace: string = "games";

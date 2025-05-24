@@ -1,4 +1,4 @@
-import { logger } from "utils/logger.js";
+import { logger } from "../utils/logger.js";
 import { EventHandler } from "./handler.js";
 
 export class TestHandler extends EventHandler {

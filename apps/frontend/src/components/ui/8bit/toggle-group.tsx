@@ -1,4 +1,3 @@
-import { Press_Start_2P } from "next/font/google"
 import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group"
 import { cva, type VariantProps } from "class-variance-authority"
 
@@ -9,11 +8,10 @@ import {
   ToggleGroupItem as ShadcnToggleGroupItem,
 } from "../toggle-group"
 
-const pressStart = Press_Start_2P({ weight: ["400"], subsets: ["latin"] })
 
 export const toggleGroupVariants = cva("", {
   variants: {
-    font: { normal: "", retro: pressStart.className },
+    font: { normal: "", retro: "" },
     variant: {
       default: "bg-transparent",
       outline:
@@ -46,7 +44,7 @@ function ToggleGroup({ ...props }: BitToggleGroupProps) {
       className={cn(
         "gap-3",
         className,
-        font !== "normal" && pressStart.className
+        font !== "normal" 
       )}
       {...props}
     >
@@ -62,7 +60,7 @@ function ToggleGroupItem({ ...props }: BitToggleGroupItemProps) {
       className={cn(
         "relative transition-transform active:translate-x-1 active:translate-y-1",
         className,
-        font !== "normal" && pressStart.className
+        font !== "normal" 
       )}
       {...props}
     >

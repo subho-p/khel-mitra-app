@@ -1,5 +1,4 @@
 import type * as React from "react"
-import { Press_Start_2P } from "next/font/google"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
@@ -10,16 +9,11 @@ import {
   TooltipTrigger as ShadcnTooltipTrigger,
 } from "@/components/ui/tooltip"
 
-const pressStart = Press_Start_2P({
-  weight: ["400"],
-  subsets: ["latin"],
-})
-
 export const tooltipVariants = cva("", {
   variants: {
     font: {
       normal: "",
-      retro: pressStart.className,
+      retro: "",
     },
   },
   defaultVariants: {

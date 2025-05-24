@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer } from "react";
 import { useAuth } from "@/contexts/auth.context";
 import { createReactContext } from "@/lib/createReactContext";
 import type { GameEndStutus, TicTacToeRoom } from "@/types";

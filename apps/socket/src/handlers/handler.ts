@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
 import { Failure, Success } from "../utils/reponse.js";
-import { logger } from "utils/logger.js";
+import { logger } from "../utils/logger.js";
 
 export abstract class EventHandler {
 	constructor(
