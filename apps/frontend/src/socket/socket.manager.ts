@@ -27,7 +27,7 @@ export class SocketManager {
 			return;
 		}
 
-		this._socket = io("http://localhost:6789", {
+		this._socket = io(import.meta.env.VITE_SOCKET_URL, {
 			transports: ["websocket"],
 			reconnection: true,
 			reconnectionAttempts: Infinity,
