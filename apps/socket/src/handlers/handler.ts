@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
 import { Failure, Success } from "../utils/reponse.js";
-import { logger } from "utils/logger.js";
+import { logger } from "../utils/logger.js";
 
 export abstract class EventHandler {
 	constructor(
@@ -22,12 +22,12 @@ export abstract class EventHandler {
 			const methodName = this.toCamelCase(event);
 			const originalhandler = (this as any)[methodName]?.bind(this);
 
-            logger.info(`Registering event (${eventName})`);
+			// logger.info(`Registering event (${eventName})`);
 
 			if (!originalhandler) {
-                logger.error(`No handler found for event (${eventName})`);
-                continue;
-            }
+				// logger.error(`No handler found for event (${eventName})`);
+				continue;
+			}
 
 			const handler = (data: any, callback?: Function) => {
 				this._currentEvent = eventName;

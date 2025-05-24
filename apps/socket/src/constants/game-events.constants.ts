@@ -3,13 +3,13 @@ export const GameEvents = [
 	"join",
 	"random",
 	"start",
-    "ready",
-    "restart",
+	"ready",
+	"restart",
 	"move",
 	"end",
 	"leave",
 	"player-left",
-    "kick",
+	"kick",
 ] as const;
 
-export type GameEvent = typeof GameEvents[number];
+export type GameEvent = (typeof GameEvents)[number];

@@ -1,9 +1,9 @@
-import { SocketUser } from "types";
-import { Room } from "./room";
+import { Player, SocketUser } from "../types/index.js";
+import { Room } from "./room.js";
 
 type TicTacToeSymbol = "X" | "O";
 
-type TicTacToePlayer = SocketUser & {
+type TicTacToePlayer = Player & {
 	symbol: TicTacToeSymbol;
 };
 
@@ -57,7 +57,6 @@ export class TicTacToeRoom extends Room<TicTacToePlayer> {
 				throw new Error("Game is over");
 			}
 			const currentPlayer = this.getCurrentPlayer();
-			console.log(currentPlayer);
 			const isCurrentPlayer = currentPlayer?.id === playerId;
 			if (!isCurrentPlayer) {
 				throw new Error("It's not your turn");
@@ -107,21 +106,20 @@ export class TicTacToeRoom extends Room<TicTacToePlayer> {
 			[2, 4, 6],
 		] as const;
 
+		let winnerSymbol: TicTacToeSymbol | null = null;
 		winningCombinations.forEach((combination) => {
 			const [a, b, c] = combination;
 
 			if (
-				this.board[a] &&
+				this.board[a] !== null &&
 				this.board[a] === this.board[b] &&
 				this.board[a] === this.board[c]
 			) {
-				if (this.board[a] !== null) {
-					return this.board[a];
-				}
+				winnerSymbol = this.board[a]!;
 			}
 		});
 
-		return null;
+		return winnerSymbol;
 	}
 
 	/**

@@ -3,6 +3,7 @@
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
+        "prepare": "husky install",
 		"build": "turbo run build",
 		"dev": "dotenv -- turbo run dev",
 		"dev:web": "dotenv -- turbo run dev --filter=web",
@@ -20,6 +21,7 @@
 	},
 	"devDependencies": {
 		"dotenv-cli": "^8.0.0",
+		"husky": "^9.1.7",
 		"prettier": "^3.5.3",
 		"turbo": "^2.5.2",
 		"typescript": "5.8.2"

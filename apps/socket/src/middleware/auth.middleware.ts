@@ -4,7 +4,6 @@ import { logger } from "../utils/logger.js";
 import { Failure } from "../utils/reponse.js";
 import { extractTokenData } from "../utils/extract-token-data.js";
 
-
 export async function authMiddleware(socket: Socket, next: (err?: any) => void): Promise<void> {
 	logger.info(`[AUTH] Socket ${socket.id} authenticating`);
 	const user = extractTokenData(socket);

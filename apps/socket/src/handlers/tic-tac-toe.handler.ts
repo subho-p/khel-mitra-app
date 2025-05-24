@@ -2,7 +2,9 @@ import { GameEvent, GameEvents } from "../constants/game-events.constants.js";
 import { EventHandler } from "./handler.js";
 import { SocketUser } from "../types/index.js";
 import { TicTacToeRoom } from "../rooms/tic-tac-toe.room.js";
-import { userStore, ticTacToeStore } from "../stores";
+import { userStore, ticTacToeStore } from "../stores/index.js";
+import { logger } from "../utils/logger.js";
+import { Success } from "../utils/reponse.js";
 
 export class TicTacToeHandler extends EventHandler {
 	protected readonly nameSpace: string = "games";
@@ -72,7 +74,6 @@ export class TicTacToeHandler extends EventHandler {
 	join(data: { roomCode: string }): void {
 		const player = this.socket.data.user as SocketUser;
 
-		console.log(data.roomCode);
 		if (!player) {
 			this.failure("Unauthorized user");
 			return;
@@ -101,7 +102,10 @@ export class TicTacToeHandler extends EventHandler {
 		if (opponent) {
 			this.io
 				.to(opponent.socketId)
-				.emit("games:tic-tac-toe:opponent-joined", { room: room.sanitizeRoom });
+				.emit(
+					"games:tic-tac-toe:opponent-joined",
+					new Success({ room: room.sanitizeRoom })
+				);
 		}
 	}
 
@@ -151,12 +155,14 @@ export class TicTacToeHandler extends EventHandler {
 		userStore.setStatus(player.id, "waiting");
 
 		this.success({ room: room.sanitizeRoom });
-		const opponent = room.getOpponent(player.socketId);
-		if (opponent) {
-			this.io
-				.to(opponent.socketId)
-				.emit("games:tic-tac-toe:opponent-joined", { room: room.sanitizeRoom });
-		}
+
+		setTimeout(() => {
+			this.broadcast(
+				"games:tic-tac-toe:opponent-joined",
+				room.roomId,
+				new Success({ room: room.sanitizeRoom })
+			);
+		}, 1000);
 
 		setTimeout(() => {
 			this.start({ roomId: room.roomId });
@@ -203,7 +209,11 @@ export class TicTacToeHandler extends EventHandler {
 		userStore.setStatus(player.id, "playing");
 		const opponent = room.getOpponent(player.socketId);
 		userStore.setStatus(opponent!.id, "playing");
-		this.broadcast("games:tic-tac-toe:start", room.roomId, { room: room.sanitizeRoom });
+		this.broadcast(
+			"games:tic-tac-toe:start",
+			room.roomId,
+			new Success({ room: room.sanitizeRoom })
+		);
 	}
 
 	move(data: { roomId: string; cell: number }) {
@@ -220,7 +230,11 @@ export class TicTacToeHandler extends EventHandler {
 
 			if (room.isPlayer(player.socketId)) {
 				room.move(player.id, data.cell);
-				this.broadcast("games:tic-tac-toe:move", room.roomId, { room: room.sanitizeRoom });
+				this.broadcast(
+					"games:tic-tac-toe:move",
+					room.roomId,
+					new Success({ room: room.sanitizeRoom })
+				);
 			}
 
 			this.checkDraw(room.roomId);
@@ -230,11 +244,31 @@ export class TicTacToeHandler extends EventHandler {
 		}
 	}
 
+	restart(data: { roomId: string }) {
+		const currentPlayer = this.socket.data.user as SocketUser;
+		const room = ticTacToeStore.getRoom(data.roomId);
+		if (room) {
+			room.reset();
+			room.players.map((player) => {
+				if (player.id === currentPlayer.id) {
+					player.isReady = true;
+				}
+			});
+
+			this.success({ data: room.sanitizeRoom, message: "Waiting for players" });
+			const allAreReady = room.players.every((player) => player.isReady);
+			if (allAreReady) {
+				this.start({ roomId: room.roomId });
+			}
+		}
+	}
+
 	end(data: any): void {
 		this.success(data);
 	}
 
 	leave(data: { roomId: string; playerId: string }) {
+		logger.info(`Player ${data.playerId} left room ${data.roomId}`);
 		const player = this.socket.data.user as SocketUser;
 		const room = ticTacToeStore.getRoom(data.roomId);
 		if (room) {
@@ -252,6 +286,39 @@ export class TicTacToeHandler extends EventHandler {
 				userStore.setStatus(opponent.id, "idle");
 				this.socket.nsp.socketsLeave(room.roomId);
 			}
+			this.success({ message: "Player left the room" });
+		}
+	}
+
+	// player left the room for any reason
+	playerLeft() {
+		const player = this.socket.data.user as SocketUser;
+		if (!player) {
+			return this.failure("Unauthorized user");
+		}
+
+		const room = ticTacToeStore.getRoomBySocketId(player.socketId);
+		// if room - send message to all players and clear the room
+		if (room) {
+			room.removePlayer(player.socketId);
+			this.broadcast(
+				"games:tic-tac-toe:player-left",
+				room.roomId,
+				new Success({
+					message: `${player.username} left the room`,
+				})
+			);
+
+			ticTacToeStore.remove(room.roomId);
+			this.socket.leave(room.roomId);
+
+			userStore.setStatus(player.id, "idle");
+			const opponent = room.getOpponent(player.socketId);
+			if (opponent) {
+				userStore.setStatus(opponent.id, "idle");
+				this.socket.nsp.socketsLeave(room.roomId);
+			}
+			this.success({ message: "Player left the room" });
 		}
 	}
 
@@ -260,11 +327,18 @@ export class TicTacToeHandler extends EventHandler {
 		if (room) {
 			const winnerSymbol = room.checkWinner();
 			if (winnerSymbol) {
+				room.players.map((player) => {
+					player.isReady = false;
+				});
 				room.winnerId =
 					room.players.find((player) => player.symbol === winnerSymbol)?.id || null;
 				room.gameStatus = "finished";
 
-				this.broadcast("games:tic-tac-toe:end", room.roomId, { room: room.sanitizeRoom });
+				this.broadcast(
+					"games:tic-tac-toe:end",
+					room.roomId,
+					new Success({ room: room.sanitizeRoom, status: "win" })
+				);
 			}
 		}
 	}
@@ -273,8 +347,15 @@ export class TicTacToeHandler extends EventHandler {
 		const room = ticTacToeStore.getRoom(roomId);
 		if (room) {
 			if (room.checkDraw()) {
+				room.players.map((player) => {
+					player.isReady = false;
+				});
 				room.gameStatus = "finished";
-				this.broadcast("games:tic-tac-toe:end", room.roomId, { room: room.sanitizeRoom });
+				this.broadcast(
+					"games:tic-tac-toe:end",
+					room.roomId,
+					new Success({ room: room.sanitizeRoom, status: "draw" })
+				);
 			}
 		}
 	}

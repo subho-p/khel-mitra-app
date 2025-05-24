@@ -5,7 +5,7 @@ const REQUIRED_KEYS = ["SOCKET_PORT", "PLAYER_JWT_SECRET", "JWT_SECRET", "CORS_O
 
 class EnvConfig {
 	constructor() {
-        logger.info("Loading environment variables");
+		logger.info("Loading environment variables");
 		EnvConfig.loadEnv();
 		this.checkEnv();
 	}
@@ -17,16 +17,16 @@ class EnvConfig {
 	checkEnv() {
 		for (const key of REQUIRED_KEYS) {
 			if (!process.env[key]) {
-                logger.error(`Environment variable ${key} is not defined`);
-                throw new Error(`Environment variable ${key} is not defined`);
+				logger.error(`Environment variable ${key} is not defined`);
+				throw new Error(`Environment variable ${key} is not defined`);
 			}
 		}
 
-        logger.info("Environment variables loaded");
+		logger.info("Environment variables loaded");
 	}
 
-	static get(key: typeof REQUIRED_KEYS[number]) {
-        return process.env[key]!;
+	static get(key: (typeof REQUIRED_KEYS)[number]) {
+		return process.env[key]!;
 	}
 }
 

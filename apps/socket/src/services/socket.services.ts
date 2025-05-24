@@ -3,7 +3,7 @@ import { SocketLogger } from "../utils/logger.js";
 import { UserStore } from "../stores/user.store.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
 import { TestHandler } from "../handlers/test.handler.js";
-import { TicTacToeHandler } from "handlers/tic-tac-toe.handler.js";
+import { TicTacToeHandler } from "../handlers/tic-tac-toe.handler.js";
 
 class SocketService {
 	private readonly logger = new SocketLogger();

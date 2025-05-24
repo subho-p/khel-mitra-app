@@ -1,5 +1,5 @@
 import { logger } from "../utils/logger.js";
-import { GameStatus, SocketUser } from "../types";
+import { GameStatus, SocketUser } from "../types/index.js";
 import { Socket } from "socket.io";
 
 export class UserStore {

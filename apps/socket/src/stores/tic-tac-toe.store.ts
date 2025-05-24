@@ -1,4 +1,4 @@
-import { TicTacToeRoom } from "rooms/tic-tac-toe.room";
+import { TicTacToeRoom } from "../rooms/tic-tac-toe.room.js";
 
 export class TicTacToeStore {
 	private static instance: TicTacToeStore;
@@ -79,6 +79,15 @@ export class TicTacToeStore {
 			}
 		});
 		return rooms;
+	}
+
+	/**
+	 * Get room by socket id
+	 * @param socketId
+	 * @returns {TicTacToeRoom | undefined}
+	 */
+	public getRoomBySocketId(socketId: string): TicTacToeRoom | undefined {
+		return Array.from(this.ticTacToeRooms.values()).find((room) => room.isPlayer(socketId));
 	}
 
 	/**

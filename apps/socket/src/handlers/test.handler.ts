@@ -1,4 +1,4 @@
-import { logger } from "utils/logger.js";
+import { logger } from "../utils/logger.js";
 import { EventHandler } from "./handler.js";
 
 export class TestHandler extends EventHandler {
@@ -10,10 +10,10 @@ export class TestHandler extends EventHandler {
 
 		logger.info(`User ${user.socketId} test`);
 
-        if (!user) {
-            this.failure("Unauthorized user");
-            return;
-        }
+		if (!user) {
+			this.failure("Unauthorized user");
+			return;
+		}
 		this.success({ user });
 	}
 }
