@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/8bit/button";
 import { navLinks } from "@/constants/navlinks.constant";
+import { useAuth } from "@/contexts/auth.context";
 import { useNavigate } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
@@ -13,6 +14,7 @@ export const MobileMenu = ({
 	setOpenMobileMenu: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
 	const navigate = useNavigate();
+	const { isAuthenticated } = useAuth();
 
 	return (
 		<>
@@ -55,25 +57,37 @@ export const MobileMenu = ({
 							</nav>
 						))}
 
-						<div className="flex flex-col items-center gap-8 py-4">
-							<Button
-								variant="outline"
+						{isAuthenticated ? (
+							<nav
+								className="cursor-pointer text-sm hover:text-primary"
 								onClick={() => {
-									navigate({ to: "/auth/signin" });
+									navigate({ to: "/profile" });
 									setOpenMobileMenu(false);
 								}}
 							>
-								Sign In
-							</Button>
-							<Button
-								onClick={() => {
-									navigate({ to: "/auth/signup" });
-									setOpenMobileMenu(false);
-								}}
-							>
-								Sign Up
-							</Button>
-						</div>
+								Profile
+							</nav>
+						) : (
+							<div className="flex flex-col items-center gap-8 py-4">
+								<Button
+									variant="outline"
+									onClick={() => {
+										navigate({ to: "/auth/signin" });
+										setOpenMobileMenu(false);
+									}}
+								>
+									Sign In
+								</Button>
+								<Button
+									onClick={() => {
+										navigate({ to: "/auth/signup" });
+										setOpenMobileMenu(false);
+									}}
+								>
+									Sign Up
+								</Button>
+							</div>
+						)}
 
 						<motion.button
 							layoutId="mobile-menu"
