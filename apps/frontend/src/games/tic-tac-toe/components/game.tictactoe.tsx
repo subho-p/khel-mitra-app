@@ -7,6 +7,7 @@ import {
 	GamePlay,
 	LocalTicTacToeGame,
 	RandomRoomTicTacToe,
+	GameResult,
 } from "@/games/tic-tac-toe/components";
 import {
 	OnlineTictactoeActionsProvider,
@@ -17,9 +18,15 @@ import {
 
 const TicTacToeGame = () => {
 	const { gameFlow, handleReset } = useGameManager();
-	const { isReadyToPlay, room, isStarted } = useOnlineTictactoe();
+	const { isReadyToPlay, room, isStarted, gameEndState } = useOnlineTictactoe();
+	console.log("Game end state", gameEndState);
+	if (gameEndState.status) {
+		return <GameResult gameEndState={gameEndState} />;
+	}
 
 	if (isStarted) return <GamePlay />;
+
+	if (gameEndState.isReady || room?.status === "waiting") return <ReadyToPlayerDisplay />;
 
 	if (isReadyToPlay && room) return <ReadyToPlayerDisplay />;
 

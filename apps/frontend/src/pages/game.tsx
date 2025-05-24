@@ -5,7 +5,7 @@ import React from "react";
 
 const GamePageWrapper = () => {
 	return (
-		<div className="w-full py-8 px-4 min-h-screen flex flex-col">
+		<div className="w-full py-8 px-4 min-h-[calc(100svh-64px)] flex flex-col">
 			<GameSettingsProvider>
 				<GameManagerProvider>
 					<GamePage />

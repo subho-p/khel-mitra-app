@@ -1,7 +1,7 @@
-import { useEffect, useReducer } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import { useAuth } from "@/contexts/auth.context";
 import { createReactContext } from "@/lib/createReactContext";
-import type { TicTacToeRoom } from "@/types";
+import type { GameEndStutus, TicTacToeRoom } from "@/types";
 
 interface OnlineTictactoe {
 	room: TicTacToeRoom | null;
@@ -36,8 +36,43 @@ const initialState: OnlineTictactoe = {
 	isStarted: false,
 };
 
+// Game End
+interface GameEndState {
+	status: GameEndStutus | null;
+	message: string | null;
+	isReady: boolean;
+}
+
+type GameEndReducerActions =
+	| { type: "SET_DATA"; payload: GameEndState }
+	| { type: "SET_GAME_END_STATUS"; payload: GameEndStutus }
+	| { type: "SET_GAME_END_STATUS_MESSAGE"; payload: string }
+	| { type: "SET_IS_READY"; payload: boolean }
+	| { type: "RESET" };
+
+function GameEndReducer(state: GameEndState, action: GameEndReducerActions): GameEndState {
+	switch (action.type) {
+		case "SET_DATA":
+			return { ...state, ...action.payload };
+		case "SET_GAME_END_STATUS":
+			return { ...state, status: action.payload };
+		case "SET_GAME_END_STATUS_MESSAGE":
+			return { ...state, message: action.payload };
+		case "SET_IS_READY":
+			return { ...state, isReady: action.payload };
+		default:
+			throw new Error("Unknown action type");
+	}
+}
+
 const OnlineTictactoeContext = createReactContext(() => {
 	const { user } = useAuth();
+
+	const [gameEndState, gameEndStateDispatch] = useReducer(GameEndReducer, {
+		status: null,
+		message: null,
+		isReady: false,
+	});
 	const [onlineTictactoeState, dispatch] = useReducer(OnlineTictactoeReducer, initialState);
 
 	const isHost = () => onlineTictactoeState.room?.hostId === user?.id;
@@ -65,6 +100,7 @@ const OnlineTictactoeContext = createReactContext(() => {
 	useEffect(() => {
 		return () => {
 			handleOnlineTictactoeStoreReset();
+			gameEndStateDispatch({ type: "RESET" });
 		};
 	}, []);
 
@@ -78,6 +114,8 @@ const OnlineTictactoeContext = createReactContext(() => {
 		setIsReadyToPlay,
 		setIsStarted,
 		handleOnlineTictactoeStoreReset,
+		gameEndState,
+		gameEndStateDispatch,
 	};
 }, "Online Tictactoe");
 

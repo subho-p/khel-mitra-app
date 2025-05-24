@@ -6,3 +6,4 @@ export * from "./game-play";
 export * from "./ready-to-player-display";
 export * from "./local-game";
 export * from "./random-room";
+export * from "./game-result";

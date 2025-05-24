@@ -10,9 +10,9 @@ function RouteComponent() {
 	return (
 		<React.Fragment>
 			<Header />
-			<div className="flex w-full h-full pt-16">
+			<main className="flex w-full h-full pt-16">
 				<Outlet />
-			</div>
+			</main>
 		</React.Fragment>
 	);
 }

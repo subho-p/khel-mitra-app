@@ -82,6 +82,11 @@ class TicTacToeSocketManager {
 		return this._socket.on(this._event("end"), callback);
 	}
 
+	// resart the game
+	restartGame(roomId: string, callback?: (res: SocketResponse) => void) {
+		return this._socket.emit(this._event("restart"), { roomId }, callback);
+	}
+
 	// off all events
 	offAllEvents() {
 		this.registeredEvents.forEach((event) => {

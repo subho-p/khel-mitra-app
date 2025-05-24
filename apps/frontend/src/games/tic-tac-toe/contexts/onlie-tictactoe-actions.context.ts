@@ -3,7 +3,7 @@ import { createReactContext } from "@/lib/createReactContext";
 import type { SocketResponse, TicTacToeRoom } from "@/types";
 
 import { useAuth } from "@/contexts/auth.context";
-import { handleSocketResponse } from "@/socket/socket.utils";
+import { handleSocketResponse, isSuccess } from "@/socket/socket.utils";
 
 import { useOnlineTictactoe, useOnlineTictactoeManager } from "@/games/tic-tac-toe/contexts";
 import { ticTacToeSocketManager } from "@/games/tic-tac-toe/tic-tac-toe-socket.manager";
@@ -14,8 +14,14 @@ import { toast } from "@/components/ui/8bit/toast";
 const OnlineTictactoeActionsContext = createReactContext(() => {
 	const { reset: resetGameSettings } = useGameSettingsActions();
 	const { handleReset: handleGameManagerReset } = useGameManager();
-	const { setIsReadyToPlay, setRoom, room, setIsStarted, handleOnlineTictactoeStoreReset } =
-		useOnlineTictactoe();
+	const {
+		setIsReadyToPlay,
+		setRoom,
+		room,
+		setIsStarted,
+		gameEndStateDispatch,
+		handleOnlineTictactoeStoreReset,
+	} = useOnlineTictactoe();
 	const {
 		createdRoomData,
 		updateCreatedRoomData,
@@ -177,12 +183,82 @@ const OnlineTictactoeActionsContext = createReactContext(() => {
 		});
 	}, [onOpponentJoined, updateCreatedRoomData]);
 
+	const onGameEnded = useCallback(() => {
+		ticTacToeSocketManager.onGameEnded(
+			(
+				res: SocketResponse<{
+					room: TicTacToeRoom;
+					status: string;
+				}>
+			) => {
+				handleSocketResponse(res, {
+					onSuccess: (data) => {
+						setRoom(data.room);
+						if (data?.status === "win") {
+							const winnerId = data.room.winnerId;
+
+							if (winnerId === user?.id) {
+								gameEndStateDispatch({
+									type: "SET_DATA",
+									payload: {
+										status: "win",
+										message: "You won the game",
+										isReady: false,
+									},
+								});
+							} else {
+								gameEndStateDispatch({
+									type: "SET_DATA",
+									payload: {
+										status: "lose",
+										message: "You lost the game",
+										isReady: false,
+									},
+								});
+							}
+						}
+
+						if (data?.status === "draw") {
+							gameEndStateDispatch({
+								type: "SET_DATA",
+								payload: {
+									status: "draw",
+									message: "The game ended in a draw",
+									isReady: false,
+								},
+							});
+						}
+					},
+					onError: (message) => {
+						console.error("Error ending game", message);
+					},
+				});
+			}
+		);
+	}, [setRoom]);
+
+	const handleRestartGame = useCallback(() => {
+		ticTacToeSocketManager.restartGame(room!.roomId, (res: SocketResponse) => {
+			if (isSuccess(res)) {
+				handleRoomReadyToPlay(false, res.data.room);
+				setRoom(res.data.room);
+				gameEndStateDispatch({
+					type: "SET_DATA",
+					payload: {
+						status: null,
+						message: null,
+						isReady: true,
+					},
+				});
+			}
+		});
+	}, [handleRoomReadyToPlay, gameEndStateDispatch, room, setRoom]);
+
 	// Call the function to listen for player left events
 	useEffect(() => {
 		function onPlayerLeft() {
 			ticTacToeSocketManager.onPlayerLeft((res) => {
 				// clear the room data
-				console.log("Player left", res);
 				resetCreatedRoomData();
 				handleGameManagerReset();
 				handleOnlineTicTacToeManagerReset();
@@ -193,35 +269,10 @@ const OnlineTictactoeActionsContext = createReactContext(() => {
 			});
 		}
 
-		function onGameEnded() {
-			ticTacToeSocketManager.onGameEnded(
-				(
-					res: SocketResponse<{
-						room: TicTacToeRoom;
-						status: string;
-					}>
-				) => {
-					handleSocketResponse(res, {
-						onSuccess: (data) => {
-							console.log("Game ended", data);
-
-							setRoom(data.room);
-							if (data.status === "draw") {
-								toast("Game has been drawn");
-							}
-							if (data.status === "win") {
-								toast("Game has been won");
-							}
-						},
-						onError: (message) => {
-							console.error("Error ending game", message);
-						},
-					});
-				}
-			);
-		}
-
 		onPlayerLeft();
+	}, []);
+
+	useEffect(() => {
 		onGameEnded();
 	}, []);
 
@@ -243,6 +294,7 @@ const OnlineTictactoeActionsContext = createReactContext(() => {
 		onPlayerMakeMove,
 		handleStartPrivateGame,
 		handleStartRandomGame,
+		handleRestartGame,
 	};
 }, "Online Tictactoe Actions");
 

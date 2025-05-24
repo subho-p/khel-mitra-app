@@ -1,6 +1,7 @@
 export type GameMode = "online" | "local";
 export type OnlineMode = "public" | "private";
 export type PrivateRoomOption = "create" | "join";
+export type GameEndStutus = "win" | "lose" | "draw";
 
 export interface GameSettings {
 	mode?: GameMode;

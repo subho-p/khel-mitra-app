@@ -89,7 +89,7 @@ export abstract class Room<T extends { id: string; socketId: string }> {
 	/**
 	 * Reset room
 	 */
-	protected reset(): void {
+	reset(): void {
 		this.initBoard();
 		this.currentPlayerId = null;
 		this.status = "waiting";

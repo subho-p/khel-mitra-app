@@ -74,7 +74,6 @@ export class TicTacToeHandler extends EventHandler {
 	join(data: { roomCode: string }): void {
 		const player = this.socket.data.user as SocketUser;
 
-		console.log(data.roomCode);
 		if (!player) {
 			this.failure("Unauthorized user");
 			return;
@@ -245,6 +244,25 @@ export class TicTacToeHandler extends EventHandler {
 		}
 	}
 
+	restart(data: { roomId: string }) {
+		const currentPlayer = this.socket.data.user as SocketUser;
+		const room = ticTacToeStore.getRoom(data.roomId);
+		if (room) {
+			room.reset();
+			room.players.map((player) => {
+				if (player.id === currentPlayer.id) {
+					player.isReady = true;
+				}
+			});
+
+			this.success({ data: room.sanitizeRoom, message: "Waiting for players" });
+			const allAreReady = room.players.every((player) => player.isReady);
+			if (allAreReady) {
+				this.start({ roomId: room.roomId });
+			}
+		}
+	}
+
 	end(data: any): void {
 		this.success(data);
 	}
@@ -305,12 +323,13 @@ export class TicTacToeHandler extends EventHandler {
 	}
 
 	private checkWinner(roomId: string): void {
-		console.log("Checking winner");
 		const room = ticTacToeStore.getRoom(roomId);
 		if (room) {
 			const winnerSymbol = room.checkWinner();
 			if (winnerSymbol) {
-				console.log("Winner found", winnerSymbol);
+				room.players.map((player) => {
+					player.isReady = false;
+				});
 				room.winnerId =
 					room.players.find((player) => player.symbol === winnerSymbol)?.id || null;
 				room.gameStatus = "finished";
@@ -325,17 +344,18 @@ export class TicTacToeHandler extends EventHandler {
 	}
 
 	private checkDraw(roomId: string): void {
-		console.log("Checking draw");
 		const room = ticTacToeStore.getRoom(roomId);
 		if (room) {
 			if (room.checkDraw()) {
+				room.players.map((player) => {
+					player.isReady = false;
+				});
 				room.gameStatus = "finished";
 				this.broadcast(
 					"games:tic-tac-toe:end",
 					room.roomId,
 					new Success({ room: room.sanitizeRoom, status: "draw" })
 				);
-				console.log("Game ended in a draw");
 			}
 		}
 	}
