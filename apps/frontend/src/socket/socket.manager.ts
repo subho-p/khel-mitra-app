@@ -2,6 +2,8 @@ import type { SocketResponse } from "@/types/socket.type";
 import { Socket, io } from "socket.io-client";
 import { handleSocketResponse } from "./socket.utils";
 import { delay } from "@/lib/utils";
+import { localStore } from "@/lib/localstore-utils";
+import { localStorageSchema } from "@/schemas/localstorage.schema";
 
 export class SocketManager {
 	private static instance: SocketManager;
@@ -32,6 +34,10 @@ export class SocketManager {
 			reconnection: true,
 			reconnectionAttempts: Infinity,
 			reconnectionDelay: 1000,
+			auth: {
+				access_token: localStore.get("user_status", localStorageSchema.shape.userStatus)
+					?.access_token,
+			},
 		});
 
 		this._socket.on("connect", () => {

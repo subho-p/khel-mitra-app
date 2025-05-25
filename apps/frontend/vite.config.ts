@@ -8,6 +8,8 @@ import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
 export default defineConfig(({ mode }) => {
 	const env = loadEnv(mode, process.cwd(), "");
 
+	const isDev = mode === "development";
+
 	return {
 		plugins: [
 			TanStackRouterVite({ target: "react", autoCodeSplitting: true }),
@@ -17,13 +19,15 @@ export default defineConfig(({ mode }) => {
 		server: {
 			host: true,
 			port: 3000,
-			proxy: {
-				"/api": {
-					target: env.VITE_API_URL,
-					changeOrigin: true,
-					rewrite: (path) => path.replace(/^\/api/, "/api"),
+			...(isDev && {
+				proxy: {
+					"/api": {
+						target: env.VITE_API_URL,
+						changeOrigin: true,
+						rewrite: (path) => path.replace(/^\/api/, "/api"),
+					},
 				},
-			},
+			}),
 		},
 		resolve: {
 			alias: {
