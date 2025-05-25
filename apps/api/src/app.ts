@@ -7,6 +7,7 @@ import "./config/passport.config.js";
 
 import { notFoundMiddleware } from "./middlewares/notFound.middleware.js";
 import { globalErrorMiddleware } from "./middlewares/globalError.middleware.js";
+import { appRateLimit } from "./middlewares/ratelimit.middlewares.js";
 
 import { authRoutes } from "./routes/auth.routes.js";
 import { meRoutes } from "./routes/me.routes.js";
@@ -45,6 +46,9 @@ app.use(passport.session());
 app.use(express.json({ limit: "32kb" }));
 app.use(express.urlencoded({ extended: true, limit: "32kb" }));
 app.use(express.static("public"));
+
+// Rate Limiter
+app.use(appRateLimit);
 
 // ROUTES
 app.use("/health", (req, res) => {

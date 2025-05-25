@@ -173,15 +173,16 @@ class AuthController {
 		tokens: { accessToken: string; refreshToken: string }
 	) {
         const expires = new Date(Date.now() + 36_00_000 * 24 * 30);
+        const isProd = config.get("NODE_ENV") === "production";
 		res.cookie("refresh_token", tokens.refreshToken, {
 			httpOnly: true,
-			secure: config.get("NODE_ENV") === "production",
-            sameSite: "none",
+			secure: isProd,
+			sameSite: isProd ? "none" : "lax",
 			expires,
 		}).cookie("access_token", tokens.accessToken, {
 			httpOnly: true,
 			secure: config.get("NODE_ENV") === "production",
-			sameSite: "none",
+			sameSite: isProd ? "none" : "strict",
 			maxAge: 15 * 60_000,
 		});
 	}
