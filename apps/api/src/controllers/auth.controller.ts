@@ -172,15 +172,16 @@ class AuthController {
 		res: express.Response,
 		tokens: { accessToken: string; refreshToken: string }
 	) {
+        const expires = new Date(Date.now() + 36_00_000 * 24 * 30);
 		res.cookie("refresh_token", tokens.refreshToken, {
 			httpOnly: true,
 			secure: config.get("NODE_ENV") === "production",
-			sameSite: "strict",
-			maxAge: 36_00_000 * 24 * 30,
+            sameSite: "none",
+			expires,
 		}).cookie("access_token", tokens.accessToken, {
 			httpOnly: true,
 			secure: config.get("NODE_ENV") === "production",
-			sameSite: "strict",
+			sameSite: "none",
 			maxAge: 15 * 60_000,
 		});
 	}
