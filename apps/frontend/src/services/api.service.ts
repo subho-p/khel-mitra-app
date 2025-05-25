@@ -1,7 +1,10 @@
+import { isDev } from "@/constants";
 import axios from "axios";
 
+const BASE_URL = import.meta.env.VITE_API_URL;
+
 const authApiService = axios.create({
-	baseURL: "/api/auth",
+	baseURL: isDev ? "/api/auth" : `${BASE_URL}/api/auth`,
 	withCredentials: true,
 	headers: {
 		"Content-Type": "application/json",
@@ -10,7 +13,7 @@ const authApiService = axios.create({
 });
 
 const apiService = axios.create({
-	baseURL: "/api",
+	baseURL: isDev ? "/api" : `${BASE_URL}/api`,
 	withCredentials: true,
 	headers: {
 		"Content-Type": "application/json",
