@@ -6,7 +6,7 @@ import EnvConfig from "./config/env.config.js";
 import cors from "cors";
 
 const corsOptions: cors.CorsOptions = {
-	origin: EnvConfig.get("CORS_ORIGIN"),
+	origin: EnvConfig.get("CORS_ORIGIN").split(","),
 	credentials: true,
 };
 
