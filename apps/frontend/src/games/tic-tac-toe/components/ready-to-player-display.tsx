@@ -6,7 +6,7 @@ import { useOnlineTictactoe, useOnlineTictactoeActions } from "@/games/tic-tac-t
 export const ReadyToPlayerDisplay = () => {
 	const { room, isHost } = useOnlineTictactoe();
 	const { handleStartPrivateGame } = useOnlineTictactoeActions();
-console.log("Is ready", room);
+	console.log("Is ready", room);
 	return (
 		<GameLayout className="flex-col gap-8">
 			<div

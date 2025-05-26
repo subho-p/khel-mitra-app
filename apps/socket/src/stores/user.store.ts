@@ -41,7 +41,7 @@ export class UserStore {
 			this.users.delete(this.userIdToSocketId.get(user.id)!);
 			this.users.set(user.socketId, user);
 			this.userIdToSocketId.set(user.id, user.socketId);
-            this.userStatus.set(user.id, "idle");
+			this.userStatus.set(user.id, "idle");
 			logger.info(`[UserStore] ${user.socketId} updated`);
 			return;
 		}

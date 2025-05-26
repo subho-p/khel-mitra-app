@@ -172,8 +172,8 @@ class AuthController {
 		res: express.Response,
 		tokens: { accessToken: string; refreshToken: string }
 	) {
-        const expires = new Date(Date.now() + 36_00_000 * 24 * 30);
-        const isProd = config.get("NODE_ENV") === "production";
+		const expires = new Date(Date.now() + 36_00_000 * 24 * 30);
+		const isProd = config.get("NODE_ENV") === "production";
 		res.cookie("refresh_token", tokens.refreshToken, {
 			httpOnly: true,
 			secure: isProd,

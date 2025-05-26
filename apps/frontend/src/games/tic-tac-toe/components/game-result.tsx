@@ -15,7 +15,7 @@ export const GameResult = ({
 }) => {
 	const { handleRestartGame } = useOnlineTictactoeActions();
 
-    if (gameEndState.isReady) return <ReadyToPlayerDisplay />
+	if (gameEndState.isReady) return <ReadyToPlayerDisplay />;
 
 	return (
 		<GameLayout>
