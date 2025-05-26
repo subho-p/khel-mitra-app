@@ -4,6 +4,7 @@ import { UserStore } from "../stores/user.store.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
 import { TestHandler } from "../handlers/test.handler.js";
 import { TicTacToeHandler } from "../handlers/tic-tac-toe.handler.js";
+import { AdminHandler } from "../handlers/admin.handler.js";
 
 class SocketService {
 	private readonly logger = new SocketLogger();
@@ -37,6 +38,10 @@ class SocketService {
 		// Tic Tac Toe
 		const ticTacToeHandler = new TicTacToeHandler(socket, this.io);
 		ticTacToeHandler.registeredEvents();
+
+		// Admin
+		const adminHandler = new AdminHandler(socket, this.io);
+		adminHandler.registeredEvents();
 	}
 }
 
