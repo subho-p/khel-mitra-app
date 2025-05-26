@@ -33,8 +33,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 	const signIn = React.useCallback(
 		async (values: SignInSchema) => {
-			setStatus("loading");
-
 			signinService(values)
 				.then((res) => {
 					localStore.set("user_status", {
@@ -55,8 +53,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 	const signUp = React.useCallback(
 		async (values: SignUpSchema) => {
-			setStatus("loading");
-
 			signupService(values)
 				.then((res) => {
 					localStore.set("user_status", {

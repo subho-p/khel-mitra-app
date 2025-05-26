@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ErrorMessage, SuccessMessage } from "../form-message";
 import React from "react";
 import { useAuth } from "@/contexts/auth.context";
+import { useAuthCallback } from "@/hooks/use-auth-callback";
 
 export const SignupForm = () => {
 	const [isLoading, setIsLoading] = React.useState(false);
@@ -14,6 +15,7 @@ export const SignupForm = () => {
 	const [successMessage, setSuccessMessage] = React.useState<string>();
 
 	const { signUp } = useAuth();
+	const { onAuthDone } = useAuthCallback();
 
 	const signinForm = useForm<SignUpSchema>({
 		resolver: zodResolver(signUpSchema),
@@ -38,6 +40,10 @@ export const SignupForm = () => {
 		await signUp(values)
 			.then(() => {
 				setSuccessMessage("Signed up successfully");
+
+				setTimeout(() => {
+					onAuthDone();
+				}, 300);
 			})
 			.catch(() => {
 				setErrorMessage("Signup failed");
