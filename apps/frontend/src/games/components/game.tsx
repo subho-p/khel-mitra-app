@@ -3,6 +3,7 @@ import { useGameSettingsState } from "../settings/game-settings.context";
 import { useRouter } from "@tanstack/react-router";
 import { TicTacToeGame } from "@/games/tic-tac-toe/components";
 import { useGameManager } from "./game.manager.context";
+import { useEffect } from "react";
 
 export const Game = () => {
 	const router = useRouter();
@@ -29,6 +30,25 @@ export const Game = () => {
 			}
 		}
 	};
+
+	useEffect(() => {
+		const search = router.state.location.search as any;
+		if (search?.mode && game) {
+			if (search?.roomCode) {
+				onChangeGameFlow("joinRoom");
+				router.navigate({
+					to: `/games/$game`,
+					params: { game: game?.param },
+					search: { roomCode: search.roomCode },
+				});
+			} else {
+				router.navigate({
+					to: `/games/$game`,
+					params: { game: game?.param },
+				});
+			}
+		}
+	}, []);
 
 	if (gameFlow === "idle") {
 		return <GameSettings handleNext={handleNext} onReset={() => onChangeGameFlow("idle")} />;

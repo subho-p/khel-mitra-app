@@ -5,12 +5,14 @@ import { useSession } from "@/hooks/use-session";
 import { MobileMenu } from "./mobile-menu";
 import { navLinks } from "@/constants/navlinks.constant";
 import { UserDropdown } from "./user-dropdown";
+import { useAuthCallback } from "@/hooks/use-auth-callback";
 
 export const Header = () => {
 	const navigate = useNavigate();
 	const [openMobileMenu, setOpenMobileMenu] = React.useState(false);
 
 	const { isAuthenticated } = useSession();
+	const { setAuthCallback } = useAuthCallback();
 
 	return (
 		<div className="relative">
@@ -41,15 +43,10 @@ export const Header = () => {
 							<UserDropdown />
 						) : (
 							<>
-								<Button
-									variant="outline"
-									onClick={() => navigate({ to: "/auth/signin" })}
-								>
+								<Button variant="outline" onClick={() => setAuthCallback()}>
 									Sign In
 								</Button>
-								<Button onClick={() => navigate({ to: "/auth/signup" })}>
-									Sign Up
-								</Button>
+								<Button onClick={() => setAuthCallback()}>Sign Up</Button>
 							</>
 						)}
 					</div>
