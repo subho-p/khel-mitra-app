@@ -3,12 +3,12 @@ import { LimitExceededError } from "../utils/error-response.js";
 
 const appRateLimit = rateLimit({
 	windowMs: 15 * 60 * 1000,
-	max: 10,
+	max: 100,
 	standardHeaders: true,
 	statusCode: 429,
 	message: "Too many requests, please try again later",
 	handler: (req, res) => {
-        throw new LimitExceededError("Too many requests, please try again later");
+		throw new LimitExceededError("Too many requests, please try again later");
 	},
 });
 
@@ -19,7 +19,7 @@ const authRateLimit = rateLimit({
 	statusCode: 429,
 	message: "Too many requests, please try again later",
 	handler: (req, res) => {
-		new LimitExceededError("Too many requests, please try again later")
+		new LimitExceededError("Too many requests, please try again later");
 	},
 });
 
