@@ -1,6 +1,6 @@
 import { Header } from "@/components/navigation/header";
 import { createFileRoute, Outlet, useRouter } from "@tanstack/react-router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 export const Route = createFileRoute("/_app")({
 	component: RouteComponent,
