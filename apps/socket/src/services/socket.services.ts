@@ -5,6 +5,7 @@ import { authMiddleware } from "../middleware/auth.middleware.js";
 import { TestHandler } from "../handlers/test.handler.js";
 import { TicTacToeHandler } from "../handlers/tic-tac-toe.handler.js";
 import { AdminHandler } from "../handlers/admin.handler.js";
+import { ChatHandler } from "../handlers/chat.handler.js";
 
 class SocketService {
 	private readonly logger = new SocketLogger();
@@ -42,6 +43,10 @@ class SocketService {
 		// Admin
 		const adminHandler = new AdminHandler(socket, this.io);
 		adminHandler.registeredEvents();
+
+		// Chat for players
+		const chatHandler = new ChatHandler(socket, this.io);
+		chatHandler.registeredEvents();
 	}
 }
 

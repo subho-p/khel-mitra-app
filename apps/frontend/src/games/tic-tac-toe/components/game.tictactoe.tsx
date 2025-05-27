@@ -1,3 +1,4 @@
+import { Chat } from "@/components/chat";
 import { useGameManager } from "@/games/components/game.manager.context";
 
 import {
@@ -24,7 +25,14 @@ const TicTacToeGame = () => {
 		return <GameResult gameEndState={gameEndState} />;
 	}
 
-	if (isStarted) return <GamePlay />;
+	if (isStarted) {
+		return (
+			<>
+				<GamePlay />
+				<Chat roomId={room?.roomId} />
+			</>
+		);
+	}
 
 	if (gameEndState.isReady || room?.status === "waiting") return <ReadyToPlayerDisplay />;
 
